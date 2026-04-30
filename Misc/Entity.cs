@@ -30,8 +30,8 @@ public class Entity
 
     protected Sprite _sprite;
 
-    protected Circle _collider;
-    public Circle Collider => _collider;
+    protected Box _collider;
+    public Box Collider => _collider;
 
     protected float _scale = 1f;
     public float Scale => _scale;
