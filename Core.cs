@@ -59,6 +59,8 @@ public class Core : Game
 
     public static RenderSystem RenderSystem { get; private set; }
 
+    private RegisterManager _registerManager;
+
     public static CollisionSystem CollisionSystem { get; private set; }
 
     public static MoveSystem MoveSystem { get; private set; }
@@ -135,6 +137,11 @@ public class Core : Game
         MoveSystem = new MoveSystem();
 
         RenderSystem = new RenderSystem();
+
+        _registerManager = new RegisterManager();
+
+        Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
+        Debug.DebugTexture.SetData(new Color[] { Color.White });
     }
 
     protected override void UnloadContent()

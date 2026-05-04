@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameLibrary.Managers;
-using MonoGameLibrary.Misc;
 
 namespace MonoGameLibrary.Systems;
 
@@ -8,12 +7,11 @@ public class UpdateSystem : GameSytem
 {
     public override void Update(GameTime gameTime)
     {
-        Entity[] entities = SceneManager.Instance.ActiveScene.Entities;
-        for (int entityIndex = 0; entityIndex < entities.Length; entityIndex++)
+        for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
         {
-            if (entities[entityIndex] != null && entities[entityIndex].CanUpdate)
+            if (RegisterManager.Instance.registeredUpdaters[entityIndex] != null && RegisterManager.Instance.registeredUpdaters[entityIndex].CanUpdate)
             {
-                entities[entityIndex].Update(gameTime);
+                RegisterManager.Instance.registeredUpdaters[entityIndex].Update(gameTime);
             }
         }
     }

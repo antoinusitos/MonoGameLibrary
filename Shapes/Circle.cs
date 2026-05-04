@@ -3,29 +3,14 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGameLibrary.Shapes;
 
-public class Circle : IEquatable<Circle>
+public class Circle : Shape, IEquatable<Circle>
 {
     private static Circle s_empty = new Circle(0, 0, 1);
 
     /// <summary>
-    /// The x-coordinate of the center of this circle.
-    /// </summary>
-    public int X;
-
-    /// <summary>
-    /// The y-coordinate of the center of this circle.
-    /// </summary>
-    public int Y;
-
-    /// <summary>
     /// The length, in pixels, from the center of this circle to the edge.
     /// </summary>
-    public readonly int Radius;
-
-    /// <summary>
-    /// Gets the location of the center of this circle.
-    /// </summary>
-    public Point Location => new Point(X, Y);
+    public readonly float Radius;
 
     /// <summary>
     /// Gets a circle with X=0, Y=0, and Radius=0.
@@ -40,22 +25,22 @@ public class Circle : IEquatable<Circle>
     /// <summary>
     /// Gets the y-coordinate of the highest point on this circle.
     /// </summary>
-    public int Top => Y - Radius;
+    public float Top => Y - Radius * Scale;
 
     /// <summary>
     /// Gets the y-coordinate of the lowest point on this circle.
     /// </summary>
-    public int Bottom => Y + Radius;
+    public float Bottom => Y + Radius;
 
     /// <summary>
     /// Gets the x-coordinate of the leftmost point on this circle.
     /// </summary>
-    public int Left => X - Radius;
+    public float Left => X - Radius;
 
     /// <summary>
     /// Gets the x-coordinate of the rightmost point on this circle.
     /// </summary>
-    public int Right => X + Radius;
+    public float Right => X + Radius;
 
     /// <summary>
     /// Creates a new circle with the specified position and radius.
@@ -63,7 +48,7 @@ public class Circle : IEquatable<Circle>
     /// <param name="x">The x-coordinate of the center of the circle.</param>
     /// <param name="y">The y-coordinate of the center of the circle..</param>
     /// <param name="radius">The length from the center of the circle to an edge.</param>
-    public Circle(int x, int y, int radius)
+    public Circle(float x, float y, float radius)
     {
         X = x;
         Y = y;
@@ -89,8 +74,8 @@ public class Circle : IEquatable<Circle>
     /// <returns>true if the other circle intersects with this circle; otherwise, false.</returns>
     public bool Intersects(Circle other)
     {
-        int radiiSquared = (this.Radius + other.Radius) * (this.Radius + other.Radius);
-        float distanceSquared = Vector2.DistanceSquared(this.Location.ToVector2(), other.Location.ToVector2());
+        float radiiSquared = (this.Radius + other.Radius) * (this.Radius + other.Radius);
+        float distanceSquared = Vector2.DistanceSquared(this.Location, other.Location);
         return distanceSquared < radiiSquared;
     }
 

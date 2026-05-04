@@ -3,34 +3,23 @@ using Microsoft.Xna.Framework;
 
 namespace MonoGameLibrary.Shapes;
 
-public class Box : IEquatable<Box>
+public class Box : Shape, IEquatable<Box>
 {
     private static Box s_empty = new Box(0, 0, 1, 1);
 
     /// <summary>
     /// The x-coordinate of the center of this circle.
     /// </summary>
-    public int X;
+    public float Width;
+
+    public float GetWidth() { return Width * Scale; }
 
     /// <summary>
     /// The y-coordinate of the center of this circle.
     /// </summary>
-    public int Y;
+    public float Height;
 
-    /// <summary>
-    /// The x-coordinate of the center of this circle.
-    /// </summary>
-    public int Width;
-
-    /// <summary>
-    /// The y-coordinate of the center of this circle.
-    /// </summary>
-    public int Height;
-
-    /// <summary>
-    /// Gets the location of the center of this circle.
-    /// </summary>
-    public Point Location => new Point(X, Y);
+    public float GetHeight() { return Height * Scale; }
 
     /// <summary>
     /// Gets a circle with X=0, Y=0, and Radius=0.
@@ -45,22 +34,22 @@ public class Box : IEquatable<Box>
     /// <summary>
     /// Gets the y-coordinate of the highest point on this circle.
     /// </summary>
-    public int Top => Y - Height / 2;
+    public float Top => Y;
 
     /// <summary>
     /// Gets the y-coordinate of the lowest point on this circle.
     /// </summary>
-    public int Bottom => Y + Height / 2;
+    public float Bottom => Y + GetHeight();
 
     /// <summary>
     /// Gets the x-coordinate of the leftmost point on this circle.
     /// </summary>
-    public int Left => X - Width / 2;
+    public float Left => X;
 
     /// <summary>
     /// Gets the x-coordinate of the rightmost point on this circle.
     /// </summary>
-    public int Right => X + Width / 2;
+    public float Right => X + GetWidth();
 
     /// <summary>
     /// Creates a new circle with the specified position and radius.
@@ -69,7 +58,7 @@ public class Box : IEquatable<Box>
     /// <param name="y">The y-coordinate of the center of the circle..</param>
     /// <param name="width">The length from the center of the circle to an edge.</param>
     /// <param name="height">The length from the center of the circle to an edge.</param>
-    public Box(int x, int y, int width, int height)
+    public Box(float x, float y, float width, float height)
     {
         X = x;
         Y = y;
@@ -83,7 +72,7 @@ public class Box : IEquatable<Box>
     /// <param name="location">The center of the circle.</param>
     /// <param name="width">The length from the center of the circle to an edge.</param>
     /// <param name="height">The length from the center of the circle to an edge.</param>
-    public Box(Point location, int width, int height)
+    public Box(Vector2 location, float width, float height)
     {
         X = location.X;
         Y = location.Y;
@@ -98,10 +87,10 @@ public class Box : IEquatable<Box>
     /// <returns>true if the other circle intersects with this circle; otherwise, false.</returns>
     public bool Intersects(Box other)
     {
-        if ((other.X >= X + Width)          // On Right
-        || (other.X + other.Width <= X)     // On Left
-        || (other.Y >= Y + Height)          // Under
-        || (other.Y + other.Height <= Y))  // Above
+        if ((other.X >= X + Width * Scale)          // On Right
+        || (other.X + other.Width * Scale <= X)     // On Left
+        || (other.Y >= Y + Height * Scale)          // Under
+        || (other.Y + other.Height * Scale <= Y))  // Above
             return false;
         else
             return true;

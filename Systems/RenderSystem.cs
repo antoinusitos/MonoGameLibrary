@@ -8,12 +8,11 @@ public class RenderSystem : GameSytem
 {
     public override void Update(GameTime gameTime)
     {
-        Entity[] entities = SceneManager.Instance.ActiveScene.Entities;
-        for (int entityIndex = 0; entityIndex < entities.Length; entityIndex++)
+        for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredRenderers.Count; entityIndex++)
         {
-            if (entities[entityIndex] != null && entities[entityIndex].CanRender)
+            if (RegisterManager.Instance.registeredRenderers[entityIndex] != null && RegisterManager.Instance.registeredRenderers[entityIndex].CanRender)
             {
-                entities[entityIndex].Render(Core.SpriteBatch);
+                RegisterManager.Instance.registeredRenderers[entityIndex].Render(Core.SpriteBatch);
             }
         }
     }

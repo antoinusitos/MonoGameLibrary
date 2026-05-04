@@ -22,9 +22,6 @@ public abstract class Scene : IDisposable
     /// </summary>
     public bool IsDisposed { get; private set; }
 
-    private List<Entity> _entities;
-    public Entity[] Entities => _entities.ToArray();
-
     // Defines the bounds of the room that the slime and bat are contained within.
     public Rectangle RoomBounds;
 
@@ -37,8 +34,6 @@ public abstract class Scene : IDisposable
     /// </summary>
     public Scene()
     {
-        _entities = new List<Entity>();
-
         // Create a content manager for the scene
         Content = new ContentManager(Core.Content.ServiceProvider);
 
@@ -98,14 +93,6 @@ public abstract class Scene : IDisposable
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
     public virtual void DrawUI(GameTime gameTime) { }
-
-    public virtual void RegisterEntity(Entity entity)
-    {
-        if (entity == null) return;
-        if (_entities.Contains(entity)) return;
-
-        _entities.Add(entity);
-    }
 
     /// <summary>
     /// Disposes of this scene.
