@@ -57,17 +57,17 @@ public class Entity
         
     }
 
-    public virtual void Update(GameTime gameTime)
+    public virtual void Update(float deltaTime)
     {
         if (_animatedSprite != null)
         {
             if (_collider != null)
             {
-                _collider.X = (int)(_position.X);
-                _collider.Y = (int)(_position.Y);
+                _collider.X = _position.X;
+                _collider.Y = _position.Y;
             }
 
-            _animatedSprite.Update(gameTime);
+            _animatedSprite.Update(deltaTime);
         }
     }
 
@@ -105,20 +105,8 @@ public class Entity
         _position = position;
         if (_collider != null)
         {
-            if (_animatedSprite != null)
-            {
-                //_collider.X = (int)(_position.X + (_animatedSprite.Width * 0.5f));
-                _collider.X = (int)(_position.X);
-                //_collider.Y = (int)(_position.Y + (_animatedSprite.Height * 0.5f));
-                _collider.Y = (int)(_position.Y);
-            }
-            else if (_sprite != null)
-            {
-                //_collider.X = (int)(_position.X + (_sprite.Width * 0.5f));
-                _collider.X = (int)(_position.X);
-                //_collider.Y = (int)(_position.Y + (_sprite.Height * 0.5f));
-                _collider.Y = (int)(_position.Y);
-            }
+            _collider.X = _position.X;
+            _collider.Y = _position.Y;
         }
     }
 
@@ -127,20 +115,8 @@ public class Entity
         _position = new Vector2(x, y);
         if (_collider != null)
         {
-            if (_animatedSprite != null)
-            {
-                _collider.X = (int)(_position.X);
-                //_collider.X = (int)(_position.X + (_animatedSprite.Width * 0.5f));
-                _collider.Y = (int)(_position.Y);
-                //_collider.Y = (int)(_position.Y + (_animatedSprite.Height * 0.5f));
-            }
-            else if (_sprite != null)
-            {
-                _collider.X = (int)(_position.X);
-                //_collider.X = (int)(_position.X + (_sprite.Width * 0.5f));
-                _collider.Y = (int)(_position.Y);
-                //_collider.Y = (int)(_position.Y + (_sprite.Height * 0.5f));
-            }
+            _collider.X = _position.X;
+            _collider.Y = _position.Y;
         }
     }
 

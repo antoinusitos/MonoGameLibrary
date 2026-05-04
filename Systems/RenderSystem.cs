@@ -6,7 +6,7 @@ namespace MonoGameLibrary.Systems;
 
 public class RenderSystem : GameSytem
 {
-    public override void Update(GameTime gameTime)
+    public override void Update(float deltaTime)
     {
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredRenderers.Count; entityIndex++)
         {

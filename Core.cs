@@ -55,6 +55,8 @@ public class Core : Game
 
     private InputManager _inputManager;
 
+    private TimeManager _timeManager;
+
     public static UpdateSystem UpdateSystem { get; private set; }
 
     public static RenderSystem RenderSystem { get; private set; }
@@ -122,6 +124,8 @@ public class Core : Game
         // Create the sprite batch instance.
         SpriteBatch = new SpriteBatch(GraphicsDevice);
 
+        _timeManager = new TimeManager();
+
         _ressourceManager = new RessourceManager();
 
         // Create a new input manager.
@@ -154,8 +158,12 @@ public class Core : Game
 
     protected override void Update(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        _timeManager.gameTime = gameTime;
+
         // Update the input manager.
-        _inputManager.Update(gameTime);
+        _inputManager.Update(deltaTime);
 
         // Update the audio controller.
         Audio.Update();
@@ -165,33 +173,35 @@ public class Core : Game
             Exit();
         }
 
-        SceneManager.Instance.Update(gameTime);
+        SceneManager.Instance.Update(deltaTime);
 
-        UpdateSystem.Update(gameTime);
-        CollisionSystem.Update(gameTime);
-        MoveSystem.Update(gameTime);
+        UpdateSystem.Update(deltaTime);
+        CollisionSystem.Update(deltaTime);
+        MoveSystem.Update(deltaTime);
 
-        SceneManager.Instance.ActiveScene.UpdateUI(gameTime);
+        SceneManager.Instance.ActiveScene.UpdateUI(deltaTime);
 
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
+        float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
         // Clear the back buffer.
         Core.GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // Begin the sprite batch to prepare for rendering.
         Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-        SceneManager.Instance.ActiveScene.Draw(gameTime);
+        SceneManager.Instance.ActiveScene.Draw(deltaTime);
 
-        RenderSystem.Update(gameTime);
+        RenderSystem.Update(deltaTime);
 
         // Always end the sprite batch when finished.
         Core.SpriteBatch.End();
 
-        SceneManager.Instance.ActiveScene.DrawUI(gameTime);
+        SceneManager.Instance.ActiveScene.DrawUI(deltaTime);
 
         base.Draw(gameTime);
     }

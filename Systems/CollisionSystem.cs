@@ -6,62 +6,69 @@ namespace MonoGameLibrary.Systems;
 
 public class CollisionSystem : GameSytem
 {
-    public override void Update(GameTime gameTime)
+    public override void Update(float deltaTime)
     {
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredColliders.Count; entityIndex++)
         {
             if (RegisterManager.Instance.registeredColliders[entityIndex] != null && RegisterManager.Instance.registeredColliders[entityIndex].CanCollide && RegisterManager.Instance.registeredColliders[entityIndex].CollisionType == CollisionType.DYNAMIC)
             {
+                var self = RegisterManager.Instance.registeredColliders[entityIndex];
+                bool collidedThisFrame = false;
+                Entity collidedWith = null;
+
                 // X RESOLUTION
-                RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[entityIndex].Position + new Vector2(RegisterManager.Instance.registeredColliders[entityIndex].Velocity.X, 0));
+                self.SetPosition(self.Position + new Vector2(self.Velocity.X, 0));
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
-                    if (RegisterManager.Instance.registeredColliders[otherIndex] != null && 
-                        RegisterManager.Instance.registeredColliders[entityIndex] != RegisterManager.Instance.registeredColliders[otherIndex] && 
-                        RegisterManager.Instance.registeredColliders[otherIndex].CanCollide &&
-                        RegisterManager.Instance.registeredColliders[entityIndex].Collider.Intersects(RegisterManager.Instance.registeredColliders[otherIndex].Collider))
+                    var other = RegisterManager.Instance.registeredColliders[otherIndex];
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
                     {
-                        //GO LEFT
-                        if (RegisterManager.Instance.registeredColliders[entityIndex].Velocity.X > 0)
-                        {
-                            RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[otherIndex].Collider.Left - RegisterManager.Instance.registeredColliders[entityIndex].Collider.GetWidth(), RegisterManager.Instance.registeredColliders[entityIndex].Position.Y);
-                            RegisterManager.Instance.registeredColliders[entityIndex].Velocity.X = 0;
-                        }
                         //GO RIGHT
-                        else if (RegisterManager.Instance.registeredColliders[entityIndex].Velocity.X < 0)
+                        if (self.Velocity.X > 0)
                         {
-                            RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[otherIndex].Collider.Right, RegisterManager.Instance.registeredColliders[entityIndex].Position.Y);
-                            RegisterManager.Instance.registeredColliders[entityIndex].Velocity.X = 0;
+                            self.SetPosition(other.Collider.Left - self.Collider.GetWidth(), self.Position.Y);
+                            self.Velocity.X = 0;
                         }
-                        RegisterManager.Instance.registeredColliders[entityIndex].OnCollide(RegisterManager.Instance.registeredColliders[otherIndex]);
-                        RegisterManager.Instance.registeredColliders[otherIndex].OnCollide(RegisterManager.Instance.registeredColliders[entityIndex]);
+                        //GO LEFT
+                        else if (self.Velocity.X < 0)
+                        {
+                            self.SetPosition(other.Collider.Right, self.Position.Y);
+                            self.Velocity.X = 0;
+                        }
+                        collidedThisFrame = true;
+                        collidedWith = other;
                     }
                 }
 
                 // Y RESOLUTION
-                RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[entityIndex].Position + new Vector2(0, RegisterManager.Instance.registeredColliders[entityIndex].Velocity.Y));
+                self.SetPosition(self.Position + new Vector2(0, self.Velocity.Y));
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
-                    if (RegisterManager.Instance.registeredColliders[otherIndex] != null &&
-                        RegisterManager.Instance.registeredColliders[entityIndex] != RegisterManager.Instance.registeredColliders[otherIndex] &&
-                        RegisterManager.Instance.registeredColliders[otherIndex].CanCollide &&
-                        RegisterManager.Instance.registeredColliders[entityIndex].Collider.Intersects(RegisterManager.Instance.registeredColliders[otherIndex].Collider))
+                    var other = RegisterManager.Instance.registeredColliders[otherIndex];
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
                     {
                         //GO UP
-                        if (RegisterManager.Instance.registeredColliders[entityIndex].Velocity.Y < 0)
+                        if (self.Velocity.Y < 0)
                         {
-                            RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[entityIndex].Position.X, RegisterManager.Instance.registeredColliders[otherIndex].Collider.Bottom);
-                            RegisterManager.Instance.registeredColliders[entityIndex].Velocity.Y = 0;
+                            self.SetPosition(self.Position.X, other.Collider.Bottom);
+                            self.Velocity.Y = 0;
                         }
                         //GO DOWN
-                        else if (RegisterManager.Instance.registeredColliders[entityIndex].Velocity.Y > 0)
+                        else if (self.Velocity.Y > 0)
                         {
-                            RegisterManager.Instance.registeredColliders[entityIndex].SetPosition(RegisterManager.Instance.registeredColliders[entityIndex].Position.X, RegisterManager.Instance.registeredColliders[otherIndex].Collider.Top - RegisterManager.Instance.registeredColliders[entityIndex].Collider.GetHeight());
-                            RegisterManager.Instance.registeredColliders[entityIndex].Velocity.Y = 0;
+                            self.SetPosition(self.Position.X, other.Collider.Top - self.Collider.GetHeight());
+                            self.Velocity.Y = 0;
                         }
-                        RegisterManager.Instance.registeredColliders[entityIndex].OnCollide(RegisterManager.Instance.registeredColliders[otherIndex]);
-                        RegisterManager.Instance.registeredColliders[otherIndex].OnCollide(RegisterManager.Instance.registeredColliders[entityIndex]);
+                        collidedThisFrame = true;
+                        collidedWith = other;
                     }
+                }
+
+                // Fire OnCollide once per frame, after both axes are resolved
+                if (collidedThisFrame && collidedWith != null)
+                {
+                    self.OnCollide(collidedWith);
+                    collidedWith.OnCollide(self);
                 }
             }
         }

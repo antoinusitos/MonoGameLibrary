@@ -6,7 +6,7 @@ namespace MonoGameLibrary.Graphics;
 public class AnimatedSprite : Sprite
 {
     private int _currentFrame;
-    private TimeSpan _elapsed;
+    private float _elapsed;
     private Animation _animation;
 
     /// <summary>
@@ -40,13 +40,13 @@ public class AnimatedSprite : Sprite
     /// Updates this animated sprite.
     /// </summary>
     /// <param name="gameTime">A snapshot of the game timing values provided by the framework.</param>
-    public void Update(GameTime gameTime)
+    public void Update(float deltaTime)
     {
-        _elapsed += gameTime.ElapsedGameTime;
+        _elapsed += deltaTime;
 
-        if (_elapsed >= _animation.Delay)
+        if (_elapsed >= _animation.Delay.TotalSeconds)
         {
-            _elapsed -= _animation.Delay;
+            _elapsed -= (float)_animation.Delay.TotalSeconds;
             _currentFrame++;
 
             if (_currentFrame >= _animation.Frames.Count)

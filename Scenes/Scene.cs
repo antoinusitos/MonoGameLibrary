@@ -74,25 +74,25 @@ public abstract class Scene : IDisposable
     /// Updates this scene.
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public virtual void Update(GameTime gameTime) { }
+    public virtual void Update(float deltaTime) { }
 
     /// <summary>
     /// Updates the UI.
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public virtual void UpdateUI(GameTime gameTime) { }
+    public virtual void UpdateUI(float deltaTime) { }
 
     /// <summary>
     /// Draws this scene.
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public virtual void Draw(GameTime gameTime) { }
+    public virtual void Draw(float deltaTime) { }
 
     /// <summary>
     /// Draws the UI.
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public virtual void DrawUI(GameTime gameTime) { }
+    public virtual void DrawUI(float deltaTime) { }
 
     /// <summary>
     /// Disposes of this scene.

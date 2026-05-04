@@ -4,5 +4,5 @@ namespace MonoGameLibrary.Systems;
 
 public abstract class GameSytem
 {
-    public abstract void Update(GameTime gameTime);
+    public abstract void Update(float deltaTime);
 }

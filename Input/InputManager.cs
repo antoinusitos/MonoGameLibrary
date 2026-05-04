@@ -55,14 +55,14 @@ public class InputManager
     /// Updates the state information for the keyboard, mouse, and gamepad inputs.
     /// </summary>
     /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public void Update(GameTime gameTime)
+    public void Update(float deltaTime)
     {
         Keyboard.Update();
         Mouse.Update();
 
         for (int i = 0; i < 4; i++)
         {
-            GamePads[i].Update(gameTime);
+            GamePads[i].Update(deltaTime);
         }
     }
 

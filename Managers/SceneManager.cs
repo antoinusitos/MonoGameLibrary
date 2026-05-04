@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGameLibrary.Scenes;
+﻿using MonoGameLibrary.Scenes;
 using System;
 
 namespace MonoGameLibrary.Managers;
@@ -32,11 +31,11 @@ public class SceneManager
         s_instance = this;
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(float deltaTime)
     {
         if (_activeScene != null)
         {
-            _activeScene.Update(gameTime);
+            _activeScene.Update(deltaTime);
         }
 
         // if there is a next scene waiting to be switch to, then transition
