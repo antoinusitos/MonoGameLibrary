@@ -2,7 +2,7 @@
 
 public static class Debug
 {
-    public static bool DRAW_AABB = true;
+    public static bool DRAW_AABB = false;
 
     public static Texture2D DebugTexture;
 

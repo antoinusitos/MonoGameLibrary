@@ -63,6 +63,8 @@ public class Core : Game
 
     private RegisterManager _registerManager;
 
+    private CameraManager _cameraManager;
+
     public static CollisionSystem CollisionSystem { get; private set; }
 
     public static MoveSystem MoveSystem { get; private set; }
@@ -144,6 +146,8 @@ public class Core : Game
 
         _registerManager = new RegisterManager();
 
+        _cameraManager = new CameraManager();
+
         Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
         Debug.DebugTexture.SetData(new Color[] { Color.White });
     }
@@ -175,6 +179,8 @@ public class Core : Game
 
         SceneManager.Instance.Update(deltaTime);
 
+        CameraManager.Instance.Update(deltaTime);
+
         UpdateSystem.Update(deltaTime);
         CollisionSystem.Update(deltaTime);
         MoveSystem.Update(deltaTime);
@@ -189,17 +195,17 @@ public class Core : Game
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         // Clear the back buffer.
-        Core.GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // Begin the sprite batch to prepare for rendering.
-        Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.GetTransformation(GraphicsDevice), sortMode: SpriteSortMode.BackToFront);
 
         SceneManager.Instance.ActiveScene.Draw(deltaTime);
 
         RenderSystem.Update(deltaTime);
 
         // Always end the sprite batch when finished.
-        Core.SpriteBatch.End();
+        SpriteBatch.End();
 
         SceneManager.Instance.ActiveScene.DrawUI(deltaTime);
 
