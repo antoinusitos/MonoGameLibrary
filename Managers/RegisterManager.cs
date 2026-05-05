@@ -1,4 +1,5 @@
 ﻿using MonoGameLibrary.Misc;
+using MonoGameLibrary.Particles;
 using System;
 using System.Collections.Generic;
 
@@ -32,6 +33,9 @@ public class RegisterManager
     public List<Entity> registeredColliders = new();
     public List<Entity> registeredRenderers = new();
     public List<Entity> registeredUpdaters = new();
+    public List<Particle> registeredParticles = new();
+
+    public List<ParticleEmitter> registeredEmitters = new();
 
     public void RegisterEntity(Entity entity)
     {
@@ -48,5 +52,35 @@ public class RegisterManager
         {
             registeredUpdaters.Add(entity);
         }
+        if (entity.IsParticle)
+        {
+            registeredParticles.Add((Particle)entity);
+        }
+    }
+
+    public void UnregisterEntity(Entity entity)
+    {
+        registeredEntities.Remove(entity);
+        if (entity.CanCollide)
+        {
+            registeredColliders.Remove(entity);
+        }
+        if (entity.CanRender)
+        {
+            registeredRenderers.Remove(entity);
+        }
+        if (entity.CanUpdate)
+        {
+            registeredUpdaters.Remove(entity);
+        }
+        if (entity.IsParticle)
+        {
+            registeredParticles.Remove((Particle)entity);
+        }
+    }
+
+    public void RegisterEmitter(ParticleEmitter emitter)
+    {
+        registeredEmitters.Add(emitter);
     }
 }

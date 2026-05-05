@@ -21,6 +21,9 @@ public class Entity
     protected bool _canMove;
     public bool CanMove => _canMove;
 
+    protected bool _isParticle;
+    public bool IsParticle => _isParticle;
+
     protected bool _active;
     public bool Active => _active;
 
@@ -135,6 +138,11 @@ public class Entity
         {
             _animatedSprite.Scale = Vector2.One * scale;
         }
+    }
+
+    public virtual void SetColor(Color color)
+    {
+        _color = color;
     }
 
     public virtual void OnCollide(Entity other)

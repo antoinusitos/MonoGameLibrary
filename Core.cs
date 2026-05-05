@@ -59,6 +59,7 @@ public class Core : Game
 
     public static UpdateSystem UpdateSystem { get; private set; }
 
+    public static ParticleSystem ParticleSystem { get; private set; }
     public static RenderSystem RenderSystem { get; private set; }
 
     private RegisterManager _registerManager;
@@ -142,6 +143,8 @@ public class Core : Game
         CollisionSystem = new CollisionSystem();
         MoveSystem = new MoveSystem();
 
+        ParticleSystem = new ParticleSystem();
+
         RenderSystem = new RenderSystem();
 
         _registerManager = new RegisterManager();
@@ -184,6 +187,7 @@ public class Core : Game
         UpdateSystem.Update(deltaTime);
         CollisionSystem.Update(deltaTime);
         MoveSystem.Update(deltaTime);
+        ParticleSystem.Update(deltaTime);
 
         SceneManager.Instance.ActiveScene.UpdateUI(deltaTime);
 
@@ -203,6 +207,7 @@ public class Core : Game
         SceneManager.Instance.ActiveScene.Draw(deltaTime);
 
         RenderSystem.Update(deltaTime);
+        ParticleSystem.Render(deltaTime);
 
         // Always end the sprite batch when finished.
         SpriteBatch.End();
