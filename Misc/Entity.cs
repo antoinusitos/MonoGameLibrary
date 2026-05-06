@@ -12,6 +12,12 @@ public class Entity
     protected bool _canUpdate;
     public bool CanUpdate => _canUpdate;
 
+    protected bool _canInteract;
+    public bool CanInteract => _canInteract;
+
+    protected bool _wantToInteract;
+    public bool WantToInteract => _wantToInteract;
+    
     protected bool _canRender;
     public bool CanRender => _canRender;
 
@@ -179,5 +185,10 @@ public class Entity
             _parent._children = null;
             _parent = null;
         }
+    }
+
+    public void SetWantToInteract(bool newState)
+    {
+        _wantToInteract = newState;
     }
 }
