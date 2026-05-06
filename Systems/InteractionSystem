@@ -1,0 +1,21 @@
+using Microsoft.Xna.Framework;
+using MonoGameLibrary.Managers;
+using MonoGameLibrary.Misc;
+
+namespace MonoGameLibrary.Systems;
+
+public class InteractionSystem : GameSytem
+{
+    public override void Update(float deltaTime)
+    {
+        for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
+        {
+            var entity = RegisterManager.Instance.registeredUpdaters[entityIndex];
+            if (entity == null || !entity.CanInteract || !entity.WantToInteract)
+                continue;
+
+            Debug.Log("entity interact");
+            entity.SetWantToInteract(false);
+        }
+    }
+}
