@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using MonoGameLibrary.Graphics;
+using MonoGameLibrary.Managers;
 using MonoGameLibrary.Misc;
 
 namespace MonoGameLibrary.Scenes;
@@ -89,12 +90,6 @@ public abstract class Scene : IDisposable
     public virtual void Draw(float deltaTime) { }
 
     /// <summary>
-    /// Draws the UI.
-    /// </summary>
-    /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
-    public virtual void DrawUI(float deltaTime) { }
-
-    /// <summary>
     /// Disposes of this scene.
     /// </summary>
     public void Dispose()
@@ -119,6 +114,7 @@ public abstract class Scene : IDisposable
 
         if (disposing)
         {
+            RegisterManager.Instance.ClearAll();
             UnloadContent();
             Content.Dispose();
         }

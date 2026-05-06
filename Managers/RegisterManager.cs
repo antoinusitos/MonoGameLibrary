@@ -37,6 +37,16 @@ public class RegisterManager
 
     public List<ParticleEmitter> registeredEmitters = new();
 
+    public void ClearAll()
+    {
+        registeredEntities.Clear();
+        registeredColliders.Clear();
+        registeredRenderers.Clear();
+        registeredUpdaters.Clear();
+        registeredParticles.Clear();
+        registeredEmitters.Clear();
+    }
+
     public void RegisterEntity(Entity entity)
     {
         registeredEntities.Add(entity);

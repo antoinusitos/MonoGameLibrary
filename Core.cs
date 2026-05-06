@@ -57,6 +57,8 @@ public class Core : Game
 
     private TimeManager _timeManager;
 
+    private UIManager _UIManager;
+
     public static UpdateSystem UpdateSystem { get; private set; }
 
     public static ParticleSystem ParticleSystem { get; private set; }
@@ -151,6 +153,8 @@ public class Core : Game
 
         _cameraManager = new CameraManager();
 
+        _UIManager = new UIManager();
+
         Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
         Debug.DebugTexture.SetData(new Color[] { Color.White });
     }
@@ -189,6 +193,11 @@ public class Core : Game
         MoveSystem.Update(deltaTime);
         ParticleSystem.Update(deltaTime);
 
+        if (_UIManager.currentUIEntity != null)
+        {
+            _UIManager.currentUIEntity.Update(deltaTime);
+        }
+
         SceneManager.Instance.ActiveScene.UpdateUI(deltaTime);
 
         base.Update(gameTime);
@@ -212,7 +221,10 @@ public class Core : Game
         // Always end the sprite batch when finished.
         SpriteBatch.End();
 
-        SceneManager.Instance.ActiveScene.DrawUI(deltaTime);
+        if (_UIManager.currentUIEntity != null)
+        {
+            _UIManager.currentUIEntity.Render(SpriteBatch);
+        }
 
         base.Draw(gameTime);
     }
