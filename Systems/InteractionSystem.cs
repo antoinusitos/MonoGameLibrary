@@ -11,10 +11,11 @@ public class InteractionSystem : GameSytem
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
         {
             var entity = RegisterManager.Instance.registeredUpdaters[entityIndex];
-            if (entity == null || !entity.CanInteract || !entity.WantToInteract)
+            if (entity == null || !entity.CanInteract || !entity.WantToInteract || entity.InteractionTarget == null)
                 continue;
 
             Debug.Log("entity interact");
+            entity.InteractWithTarget();
             entity.SetWantToInteract(false);
         }
     }
