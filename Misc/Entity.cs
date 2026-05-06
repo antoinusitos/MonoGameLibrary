@@ -67,6 +67,9 @@ public class Entity
     protected Entity _children = null;
     public Entity Children => _children;
 
+    protected Entity _interactTarget = null;
+    public Entity InteractionTarget => _interactionTarget;
+
     public bool PendingDestroy = false;
 
     public Entity(string name)
@@ -190,5 +193,18 @@ public class Entity
     public void SetWantToInteract(bool newState)
     {
         _wantToInteract = newState;
+    }
+
+    public void SetInteractionTarget(Entity target)
+    {
+        _interactionTarget = target;
+    }
+
+    public virtual void InteractWithTarget()
+    {
+        if (_interactionTarget != null)
+        {
+             Debug.Log("interact with target")
+        }
     }
 }
