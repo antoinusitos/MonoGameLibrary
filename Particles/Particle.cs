@@ -12,7 +12,7 @@ public class Particle : Entity
 
     protected float _lifeElapsed;
 
-    public Particle() : base()
+    public Particle(string name) : base(name)
     {
         _isParticle = true;
     }

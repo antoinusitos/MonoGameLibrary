@@ -21,6 +21,9 @@ public class Entity
     protected bool _canMove;
     public bool CanMove => _canMove;
 
+    protected string _entityName;
+    public string EntityName => _entityName;
+
     protected bool _isParticle;
     public bool IsParticle => _isParticle;
 
@@ -40,6 +43,9 @@ public class Entity
     protected Box _collider;
     public Box Collider => _collider;
 
+    protected bool _isTrigger;
+    public bool IsTrigger => _isTrigger;
+
     protected CollisionType _collisionType;
     public CollisionType CollisionType => _collisionType;
 
@@ -49,7 +55,18 @@ public class Entity
     protected Color _color = Color.White;
     public Color Color => _color;
 
+    protected Entity _parent = null;
+    public Entity Parent => _parent;
+
+    protected Entity _children = null;
+    public Entity Children => _children;
+
     public bool PendingDestroy = false;
+
+    public Entity(string name)
+    {
+        _entityName = name;
+    }
 
     public virtual void LoadContent(ContentManager content)
     {
@@ -88,18 +105,21 @@ public class Entity
 
         if (_animatedSprite != null)
         {
-            _animatedSprite.Draw(spriteBatch, _position);
+            _animatedSprite.Draw(spriteBatch, _position, _scale);
         }
         if (_sprite != null)
         {
-            _sprite.Draw(spriteBatch, _position);
+            _sprite.Draw(spriteBatch, _position, _scale);
         }
 
         if (Debug.DRAW_AABB)
         {
             spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_position.X, (int)_position.Y, 5, 5), Color.Red);
 
-            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_collider.X, (int)_collider.Y, 5, 5), Color.Orange);
+            if (_collider != null)
+            {
+                spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_collider.X, (int)_collider.Y, 5, 5), Color.Orange);
+            }
         }
     }
 
@@ -110,6 +130,10 @@ public class Entity
         {
             _collider.X = _position.X;
             _collider.Y = _position.Y;
+        }
+        if (_children != null)
+        {
+            _children.SetPosition(position);
         }
     }
 
@@ -130,14 +154,6 @@ public class Entity
         {
             _collider.Scale = scale;
         }
-        if (_sprite != null)
-        {
-            _sprite.Scale = Vector2.One * scale;
-        }
-        if (_animatedSprite != null)
-        {
-            _animatedSprite.Scale = Vector2.One * scale;
-        }
     }
 
     public virtual void SetColor(Color color)
@@ -148,5 +164,20 @@ public class Entity
     public virtual void OnCollide(Entity other)
     {
 
+    }
+
+    public void AttachTo(Entity entity)
+    {
+        entity._children = this;
+        _parent = entity;
+    }
+
+    public void Detach()
+    {
+        if (_parent  != null)
+        {
+            _parent._children = null;
+            _parent = null;
+        }
     }
 }

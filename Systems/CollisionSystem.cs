@@ -23,17 +23,20 @@ public class CollisionSystem : GameSytem
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
                     if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
                     {
-                        //GO RIGHT
-                        if (self.Velocity.X > 0)
+                        if (!other.IsTrigger && !self.IsTrigger)
                         {
-                            self.SetPosition(other.Collider.Left - self.Collider.GetWidth(), self.Position.Y);
-                            self.Velocity.X = 0;
-                        }
-                        //GO LEFT
-                        else if (self.Velocity.X < 0)
-                        {
-                            self.SetPosition(other.Collider.Right, self.Position.Y);
-                            self.Velocity.X = 0;
+                            //GO RIGHT
+                            if (self.Velocity.X > 0)
+                            {
+                                self.SetPosition(other.Collider.Left - self.Collider.GetWidth(), self.Position.Y);
+                                self.Velocity.X = 0;
+                            }
+                            //GO LEFT
+                            else if (self.Velocity.X < 0)
+                            {
+                                self.SetPosition(other.Collider.Right, self.Position.Y);
+                                self.Velocity.X = 0;
+                            }
                         }
                         collidedThisFrame = true;
                         collidedWith = other;
@@ -47,17 +50,20 @@ public class CollisionSystem : GameSytem
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
                     if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
                     {
-                        //GO UP
-                        if (self.Velocity.Y < 0)
+                        if (!other.IsTrigger && !self.IsTrigger)
                         {
-                            self.SetPosition(self.Position.X, other.Collider.Bottom);
-                            self.Velocity.Y = 0;
-                        }
-                        //GO DOWN
-                        else if (self.Velocity.Y > 0)
-                        {
-                            self.SetPosition(self.Position.X, other.Collider.Top - self.Collider.GetHeight());
-                            self.Velocity.Y = 0;
+                            //GO UP
+                            if (self.Velocity.Y < 0)
+                            {
+                                self.SetPosition(self.Position.X, other.Collider.Bottom);
+                                self.Velocity.Y = 0;
+                            }
+                            //GO DOWN
+                            else if (self.Velocity.Y > 0)
+                            {
+                                self.SetPosition(self.Position.X, other.Collider.Top - self.Collider.GetHeight());
+                                self.Velocity.Y = 0;
+                            }
                         }
                         collidedThisFrame = true;
                         collidedWith = other;

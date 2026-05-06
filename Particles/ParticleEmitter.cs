@@ -86,7 +86,7 @@ public class ParticleEmitter
         {
             _spawnDelay = 0;
 
-            Particle particle = new Particle();
+            Particle particle = new Particle("particle");
             particle.LoadContent(Core.Content);
             particle.Initialize();
             Vector2 offset = Vector2.Zero;
