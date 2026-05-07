@@ -1,11 +1,17 @@
 ﻿using MonoGameLibrary.Shapes;
+using System.Collections.Generic;
 
 namespace MonoGameLibrary.Misc;
 
 public class Trigger : Entity
 {
     public delegate void OnTriggerEventDelegate(Entity other);
-    public OnTriggerEventDelegate onTriggerEvent;
+    public OnTriggerEventDelegate onTriggerEnter;
+    public OnTriggerEventDelegate onTriggerStay;
+    public OnTriggerEventDelegate onTriggerExit;
+
+    public List<Entity> entitiesThisFrame = new List<Entity>();
+    public List<Entity> entities = new List<Entity>();
 
     public Trigger(string name) : base(name)
     {
@@ -18,7 +24,7 @@ public class Trigger : Entity
         _canCollide = true;
         _isTrigger = true;
         _canRender = true;
-        _collisionType = CollisionType.STATIC;
+        _collisionType = CollisionType.DYNAMIC;
 
         _collider = new Box(
             (int)(_position.X),
@@ -31,6 +37,35 @@ public class Trigger : Entity
     public override void OnCollide(Entity other)
     {
         base.OnCollide(other);
-        onTriggerEvent?.Invoke(other);
+    }
+
+    public void UpdateTrigger()
+    {
+        for (int i = 0; i < entitiesThisFrame.Count; i++)
+        {
+            if (!entities.Contains(entitiesThisFrame[i]))
+            {
+                onTriggerEnter?.Invoke(entitiesThisFrame[i]);
+            }
+            else if (entities.Contains(entitiesThisFrame[i]))
+            {
+                onTriggerStay?.Invoke(entitiesThisFrame[i]);
+            }
+        }
+        for (int i = 0; i < entities.Count; i++)
+        {
+            if (!entitiesThisFrame.Contains(entities[i]))
+            {
+                onTriggerExit?.Invoke(entities[i]);
+            }
+        }
+
+        entities.Clear();
+        for (int i = 0; i < entitiesThisFrame.Count; i++)
+        {
+            entities.Add(entitiesThisFrame[i]);
+
+        }
+        entitiesThisFrame.Clear();
     }
 }

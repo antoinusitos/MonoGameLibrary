@@ -37,7 +37,10 @@ public class Entity
     public bool Active => _active;
 
     protected Vector2 _position;
-    public Vector2 Position => _position;
+    public Vector2 Position => (_parent != null) ? _parent.Position + _relativePosition : _position;
+
+    protected Vector2 _relativePosition;
+    public Vector2 RelativePosition => _relativePosition;
 
     protected Vector2 _velocity;
     public Vector2 Velocity;// => _velocity;
@@ -67,7 +70,7 @@ public class Entity
     protected Entity _children = null;
     public Entity Children => _children;
 
-    protected Entity _interactTarget = null;
+    protected Entity _interactionTarget = null;
     public Entity InteractionTarget => _interactionTarget;
 
     public bool PendingDestroy = false;
@@ -109,7 +112,12 @@ public class Entity
     {
         if (_canCollide && Debug.DRAW_AABB)
         {
-            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_position.X, (int)_position.Y, (int)(_collider.Width * _collider.Scale), (int)(_collider.Height * _collider.Scale)), Color.White);
+            Vector2 pos = new Vector2(_position.X,_position.Y);
+            if (_parent != null)
+            {
+                pos += _relativePosition;
+            }
+            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)pos.X, (int)pos.Y, (int)(_collider.Width * _collider.Scale), (int)(_collider.Height * _collider.Scale)), new Color(0, 255, 0, 100));
         }
 
         if (_animatedSprite != null)
@@ -134,6 +142,16 @@ public class Entity
 
     public virtual void SetPosition(Vector2 position)
     {
+        if (_parent != null)
+        {
+            _position = position + _relativePosition;
+            if (_collider != null)
+            {
+                _collider.X = _position.X;
+                _collider.Y = _position.Y;
+            }
+            return;
+        }
         _position = position;
         if (_collider != null)
         {
@@ -148,12 +166,32 @@ public class Entity
 
     public virtual void SetPosition(float x, float y)
     {
+        if (_parent != null)
+        {
+            _position = new Vector2(x, y) + _relativePosition;
+            if (_collider != null)
+            {
+                _collider.X = _position.X;
+                _collider.Y = _position.Y;
+            }
+            return;
+        }
         _position = new Vector2(x, y);
         if (_collider != null)
         {
             _collider.X = _position.X;
             _collider.Y = _position.Y;
         }
+        if (_children != null)
+        {
+            _children.SetPosition(_position);
+        }
+    }
+
+    public virtual void SetRelativePosition(float x, float y)
+    {
+        _relativePosition = new Vector2(x, y);
+        _position += _relativePosition;
     }
 
     public virtual void SetScale(float scale)
@@ -204,7 +242,7 @@ public class Entity
     {
         if (_interactionTarget != null)
         {
-             Debug.Log("interact with target")
+            Debug.Log("interact with target");
         }
     }
 }

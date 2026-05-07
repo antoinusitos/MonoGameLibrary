@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using MonoGameLibrary.Managers;
 using MonoGameLibrary.Misc;
+using System.Collections.Generic;
 
 namespace MonoGameLibrary.Systems;
 
@@ -8,11 +9,17 @@ public class CollisionSystem : GameSytem
 {
     public override void Update(float deltaTime)
     {
+        List<Trigger> triggers = new List<Trigger>();
+
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredColliders.Count; entityIndex++)
         {
             if (RegisterManager.Instance.registeredColliders[entityIndex] != null && RegisterManager.Instance.registeredColliders[entityIndex].CanCollide && RegisterManager.Instance.registeredColliders[entityIndex].CollisionType == CollisionType.DYNAMIC)
             {
                 var self = RegisterManager.Instance.registeredColliders[entityIndex];
+                if (self.IsTrigger)
+                {
+                    triggers.Add((Trigger)self);
+                }
                 bool collidedThisFrame = false;
                 Entity collidedWith = null;
 
@@ -36,6 +43,27 @@ public class CollisionSystem : GameSytem
                             {
                                 self.SetPosition(other.Collider.Right, self.Position.Y);
                                 self.Velocity.X = 0;
+                            }
+                        }
+                        else
+                        {
+                            if (other.IsTrigger)
+                            {
+                                if (!triggers.Contains((Trigger)other))
+                                {
+                                    triggers.Add((Trigger)other);
+                                }
+                                if (!((Trigger)other).entitiesThisFrame.Contains(self))
+                                {
+                                    ((Trigger)other).entitiesThisFrame.Add(self);
+                                }
+                            }
+                            if (self.IsTrigger)
+                            {
+                                if (!((Trigger)self).entitiesThisFrame.Contains(other))
+                                {
+                                    ((Trigger)self).entitiesThisFrame.Add(other);
+                                }
                             }
                         }
                         collidedThisFrame = true;
@@ -65,6 +93,27 @@ public class CollisionSystem : GameSytem
                                 self.Velocity.Y = 0;
                             }
                         }
+                        else
+                        {
+                            if (other.IsTrigger)
+                            {
+                                if (!triggers.Contains((Trigger)other))
+                                {
+                                    triggers.Add((Trigger)other);
+                                }
+                                if (!((Trigger)other).entitiesThisFrame.Contains(self))
+                                {
+                                    ((Trigger)other).entitiesThisFrame.Add(self);
+                                }
+                            }
+                            if (self.IsTrigger)
+                            {
+                                if (!((Trigger)self).entitiesThisFrame.Contains(other))
+                                {
+                                    ((Trigger)self).entitiesThisFrame.Add(other);
+                                }
+                            }
+                        }
                         collidedThisFrame = true;
                         collidedWith = other;
                     }
@@ -77,6 +126,11 @@ public class CollisionSystem : GameSytem
                     collidedWith.OnCollide(self);
                 }
             }
+        }
+
+        for (int triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+        {
+            triggers[triggerIndex].UpdateTrigger();
         }
     }
 }
