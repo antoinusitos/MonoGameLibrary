@@ -19,6 +19,9 @@ public class SceneManager
     // The next scene to switch to, if there is one.
     private Scene _nextScene;
 
+    private bool _isDirty = true;
+    public bool IsDirty => _isDirty;
+
     public SceneManager()
     {
         // Ensure that multiple cores are not created.
@@ -80,5 +83,10 @@ public class SceneManager
         {
             _activeScene.Initialize();
         }
+    }
+
+    public void SetIsDirty(bool value)
+    {
+        _isDirty = value;
     }
 }

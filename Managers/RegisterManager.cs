@@ -1,4 +1,4 @@
-﻿using MonoGameLibrary.Misc;
+﻿using MonoGameLibrary.Entities;
 using MonoGameLibrary.Particles;
 using System;
 using System.Collections.Generic;

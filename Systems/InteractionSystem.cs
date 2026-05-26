@@ -1,6 +1,5 @@
-using Microsoft.Xna.Framework;
+using MonoGameLibrary.Entities;
 using MonoGameLibrary.Managers;
-using MonoGameLibrary.Misc;
 
 namespace MonoGameLibrary.Systems;
 
@@ -11,12 +10,19 @@ public class InteractionSystem : GameSytem
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
         {
             var entity = RegisterManager.Instance.registeredUpdaters[entityIndex];
-            if (entity == null || !entity.CanInteract || !entity.WantToInteract || entity.InteractionTarget == null)
+            if (entity == null || !entity.Active)
+            {
                 continue;
+            }
+            if (entity.GetType().IsSubclassOf(typeof(Character)))
+            {
+                Character character = (Character)entity;
+                if (character == null || !character.CanInteract || !character.WantToInteract)
+                    continue;
 
-            Debug.Log("entity interact");
-            entity.InteractWithTarget();
-            entity.SetWantToInteract(false);
+                character.InteractWithTarget();
+                entity.SetWantToInteract(false);
+            }
         }
     }
 }

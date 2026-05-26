@@ -11,7 +11,9 @@ namespace MonoGameLibrary.Graphics;
 public class Tilemap
 {
     private readonly Tileset _tileset;
+    public Tileset Tileset => _tileset;
     private readonly int[] _tiles;
+    public int[] Tiles => _tiles;
 
     /// <summary>
     /// Gets the total number of rows in this tilemap.

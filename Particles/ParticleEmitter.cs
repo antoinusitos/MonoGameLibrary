@@ -29,6 +29,9 @@ public class ParticleEmitter
     protected float _lifeTime;
     public float LifeTime => _lifeTime;
 
+    protected bool _active = true;
+    public bool Active => _active;
+
 
     public ParticleEmitter()
     {

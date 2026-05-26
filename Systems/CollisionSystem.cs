@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using MonoGameLibrary.Entities;
+using MonoGameLibrary.Interfaces;
 using MonoGameLibrary.Managers;
 using MonoGameLibrary.Misc;
 using System.Collections.Generic;
@@ -13,7 +15,7 @@ public class CollisionSystem : GameSytem
 
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredColliders.Count; entityIndex++)
         {
-            if (RegisterManager.Instance.registeredColliders[entityIndex] != null && RegisterManager.Instance.registeredColliders[entityIndex].CanCollide && RegisterManager.Instance.registeredColliders[entityIndex].CollisionType == CollisionType.DYNAMIC)
+            if (RegisterManager.Instance.registeredColliders[entityIndex] != null && RegisterManager.Instance.registeredColliders[entityIndex].CanCollide && RegisterManager.Instance.registeredColliders[entityIndex].CollisionType == CollisionType.DYNAMIC && RegisterManager.Instance.registeredColliders[entityIndex].Active)
             {
                 var self = RegisterManager.Instance.registeredColliders[entityIndex];
                 if (self.IsTrigger)
@@ -25,10 +27,14 @@ public class CollisionSystem : GameSytem
 
                 // X RESOLUTION
                 self.SetPosition(self.Position + new Vector2(self.Velocity.X, 0));
+                if (self.Velocity.X !=  0)
+                {
+                    SceneManager.Instance.SetIsDirty(true);
+                }
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
-                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active)
                     {
                         if (!other.IsTrigger && !self.IsTrigger)
                         {
@@ -53,16 +59,37 @@ public class CollisionSystem : GameSytem
                                 {
                                     triggers.Add((Trigger)other);
                                 }
-                                if (!((Trigger)other).entitiesThisFrame.Contains(self))
+
+                                if (self.IsTrigger)
                                 {
-                                    ((Trigger)other).entitiesThisFrame.Add(self);
+                                    if (other.Parent != self.Parent && !((Trigger)other).entitiesThisFrame.Contains(other) && self.Parent is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other.Parent);
+                                    }
+                                }
+                                else
+                                {
+                                    if (self != other.Parent && !((Trigger)other).entitiesThisFrame.Contains(self) && self is IInteractable)
+                                    {
+                                        ((Trigger)other).entitiesThisFrame.Add(self);
+                                    }
                                 }
                             }
                             if (self.IsTrigger)
                             {
-                                if (!((Trigger)self).entitiesThisFrame.Contains(other))
+                                if (other.IsTrigger)
                                 {
-                                    ((Trigger)self).entitiesThisFrame.Add(other);
+                                    if (other.Parent != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other.Parent is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other.Parent);
+                                    }
+                                }
+                                else
+                                {
+                                    if (other != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other);
+                                    }
                                 }
                             }
                         }
@@ -73,10 +100,14 @@ public class CollisionSystem : GameSytem
 
                 // Y RESOLUTION
                 self.SetPosition(self.Position + new Vector2(0, self.Velocity.Y));
+                if (self.Velocity.Y != 0)
+                {
+                    SceneManager.Instance.SetIsDirty(true);
+                }
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
-                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider))
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active)
                     {
                         if (!other.IsTrigger && !self.IsTrigger)
                         {
@@ -101,16 +132,37 @@ public class CollisionSystem : GameSytem
                                 {
                                     triggers.Add((Trigger)other);
                                 }
-                                if (!((Trigger)other).entitiesThisFrame.Contains(self))
+
+                                if (self.IsTrigger)
                                 {
-                                    ((Trigger)other).entitiesThisFrame.Add(self);
+                                    if (other.Parent != self.Parent && !((Trigger)other).entitiesThisFrame.Contains(other) && self.Parent is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other.Parent);
+                                    }
+                                }
+                                else
+                                {
+                                    if (self != other.Parent && !((Trigger)other).entitiesThisFrame.Contains(self) && self is IInteractable)
+                                    {
+                                        ((Trigger)other).entitiesThisFrame.Add(self);
+                                    }
                                 }
                             }
                             if (self.IsTrigger)
                             {
-                                if (!((Trigger)self).entitiesThisFrame.Contains(other))
+                                if (other.IsTrigger)
                                 {
-                                    ((Trigger)self).entitiesThisFrame.Add(other);
+                                    if (other.Parent != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other.Parent is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other.Parent);
+                                    }
+                                }
+                                else
+                                {
+                                    if (other != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other is IInteractable)
+                                    {
+                                        ((Trigger)self).entitiesThisFrame.Add(other);
+                                    }
                                 }
                             }
                         }

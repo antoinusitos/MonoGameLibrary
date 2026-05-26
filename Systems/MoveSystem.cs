@@ -11,12 +11,17 @@ public class MoveSystem : GameSytem
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
         {
             var entity = RegisterManager.Instance.registeredUpdaters[entityIndex];
-            if (entity == null || !entity.CanMove)
+            if (entity == null || !entity.CanMove || !entity.Active)
                 continue;
 
             // Skip DYNAMIC colliders: CollisionSystem already applied their velocity
             if (entity.CanCollide && entity.CollisionType == CollisionType.DYNAMIC)
                 continue;
+
+            if (entity.Velocity != Vector2.Zero)
+            {
+                SceneManager.Instance.SetIsDirty(true);
+            }
 
             entity.SetPosition(entity.Velocity + entity.Position);
         }

@@ -1,4 +1,6 @@
-﻿using MonoGameLibrary.Shapes;
+﻿using Microsoft.Xna.Framework;
+using MonoGameLibrary.Entities;
+using MonoGameLibrary.Shapes;
 using System.Collections.Generic;
 
 namespace MonoGameLibrary.Misc;
@@ -9,6 +11,9 @@ public class Trigger : Entity
     public OnTriggerEventDelegate onTriggerEnter;
     public OnTriggerEventDelegate onTriggerStay;
     public OnTriggerEventDelegate onTriggerExit;
+
+    public delegate void OnCollideEventDelegate(Entity other);
+    public OnCollideEventDelegate onCollisionEnter;
 
     public List<Entity> entitiesThisFrame = new List<Entity>();
     public List<Entity> entities = new List<Entity>();
@@ -37,6 +42,8 @@ public class Trigger : Entity
     public override void OnCollide(Entity other)
     {
         base.OnCollide(other);
+
+        onCollisionEnter?.Invoke(other);
     }
 
     public void UpdateTrigger()
@@ -67,5 +74,11 @@ public class Trigger : Entity
 
         }
         entitiesThisFrame.Clear();
+    }
+
+    public void SetTriggerSize(Vector2 size)
+    {
+        _collider.Width = size.X;
+        _collider.Height = size.Y;
     }
 }

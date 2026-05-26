@@ -3,9 +3,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Managers;
+using MonoGameLibrary.Misc;
 using MonoGameLibrary.Shapes;
 
-namespace MonoGameLibrary.Misc;
+namespace MonoGameLibrary.Entities;
 
 public class Entity
 {
@@ -33,11 +34,11 @@ public class Entity
     protected bool _isParticle;
     public bool IsParticle => _isParticle;
 
-    protected bool _active;
+    protected bool _active = true;
     public bool Active => _active;
 
     protected Vector2 _position;
-    public Vector2 Position => (_parent != null) ? _parent.Position + _relativePosition : _position;
+    public Vector2 Position => _parent != null ? _parent.Position + _relativePosition : _position;
 
     protected Vector2 _relativePosition;
     public Vector2 RelativePosition => _relativePosition;
@@ -61,6 +62,9 @@ public class Entity
     protected float _scale = 1f;
     public float Scale => _scale;
 
+    protected int _layer = 0;
+    public int Layer => _layer;
+
     protected Color _color = Color.White;
     public Color Color => _color;
 
@@ -69,9 +73,6 @@ public class Entity
 
     protected Entity _children = null;
     public Entity Children => _children;
-
-    protected Entity _interactionTarget = null;
-    public Entity InteractionTarget => _interactionTarget;
 
     public bool PendingDestroy = false;
 
@@ -110,6 +111,11 @@ public class Entity
 
     public virtual void Render(SpriteBatch spriteBatch)
     {
+        if (_active == false)
+        {
+            return;
+        }
+
         if (_canCollide && Debug.DRAW_AABB)
         {
             Vector2 pos = new Vector2(_position.X,_position.Y);
@@ -122,11 +128,11 @@ public class Entity
 
         if (_animatedSprite != null)
         {
-            _animatedSprite.Draw(spriteBatch, _position, _scale);
+            _animatedSprite.Draw(spriteBatch, _position, _scale, _color);
         }
         if (_sprite != null)
         {
-            _sprite.Draw(spriteBatch, _position, _scale);
+            _sprite.Draw(spriteBatch, _position, _scale, _color);
         }
 
         if (Debug.DRAW_AABB)
@@ -233,16 +239,8 @@ public class Entity
         _wantToInteract = newState;
     }
 
-    public void SetInteractionTarget(Entity target)
+    public void SetActive(bool active)
     {
-        _interactionTarget = target;
-    }
-
-    public virtual void InteractWithTarget()
-    {
-        if (_interactionTarget != null)
-        {
-            Debug.Log("interact with target");
-        }
+        _active = active;
     }
 }

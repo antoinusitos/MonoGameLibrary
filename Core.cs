@@ -59,10 +59,14 @@ public class Core : Game
 
     private UIManager _UIManager;
 
+    private PerformanceManager _performanceManager;
+
     public static UpdateSystem UpdateSystem { get; private set; }
 
     public static ParticleSystem ParticleSystem { get; private set; }
     public static RenderSystem RenderSystem { get; private set; }
+    public static InteractionSystem InteractionSystem { get; private set; }
+    
 
     private RegisterManager _registerManager;
 
@@ -144,6 +148,7 @@ public class Core : Game
         UpdateSystem = new UpdateSystem();
         CollisionSystem = new CollisionSystem();
         MoveSystem = new MoveSystem();
+        InteractionSystem = new InteractionSystem();
 
         ParticleSystem = new ParticleSystem();
 
@@ -154,6 +159,9 @@ public class Core : Game
         _cameraManager = new CameraManager();
 
         _UIManager = new UIManager();
+
+        _performanceManager = new PerformanceManager();
+        _performanceManager.LoadContent(Content);
 
         Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
         Debug.DebugTexture.SetData(new Color[] { Color.White });
@@ -172,6 +180,7 @@ public class Core : Game
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         _timeManager.gameTime = gameTime;
+        _timeManager.deltaTime = deltaTime;
 
         // Update the input manager.
         _inputManager.Update(deltaTime);
@@ -192,6 +201,7 @@ public class Core : Game
         CollisionSystem.Update(deltaTime);
         MoveSystem.Update(deltaTime);
         ParticleSystem.Update(deltaTime);
+        InteractionSystem.Update(deltaTime);
 
         if (_UIManager.currentUIEntity != null)
         {
@@ -199,6 +209,8 @@ public class Core : Game
         }
 
         SceneManager.Instance.ActiveScene.UpdateUI(deltaTime);
+
+        _performanceManager.Update(deltaTime);
 
         base.Update(gameTime);
     }
@@ -208,7 +220,7 @@ public class Core : Game
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         // Clear the back buffer.
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.Black);
 
         // Begin the sprite batch to prepare for rendering.
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.GetTransformation(GraphicsDevice), sortMode: SpriteSortMode.BackToFront);
@@ -225,6 +237,8 @@ public class Core : Game
         {
             _UIManager.currentUIEntity.Render(SpriteBatch);
         }
+
+        _performanceManager.Render(SpriteBatch);
 
         base.Draw(gameTime);
     }

@@ -9,7 +9,7 @@ public class ParticleSystem : GameSytem
         for (int emitterIndex = 0; emitterIndex < RegisterManager.Instance.registeredEmitters.Count; emitterIndex++)
         {
             var emitter = RegisterManager.Instance.registeredEmitters[emitterIndex];
-            if (emitter == null)
+            if (emitter == null || !emitter.Active)
                 continue;
 
             emitter.Update(deltaTime);
@@ -18,7 +18,7 @@ public class ParticleSystem : GameSytem
         for (int particleIndex = 0; particleIndex < RegisterManager.Instance.registeredParticles.Count; particleIndex++)
         {
             var particle = RegisterManager.Instance.registeredParticles[particleIndex];
-            if (particle == null)
+            if (particle == null || !particle.Active)
                 continue;
 
             particle.Update(deltaTime);
@@ -30,7 +30,7 @@ public class ParticleSystem : GameSytem
         for (int particleIndex = 0; particleIndex < RegisterManager.Instance.registeredParticles.Count; particleIndex++)
         {
             var particle = RegisterManager.Instance.registeredParticles[particleIndex];
-            if (particle == null)
+            if (particle == null || !particle.Active)
                 continue;
 
             particle.Render(Core.SpriteBatch);

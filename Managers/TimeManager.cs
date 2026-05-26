@@ -25,4 +25,6 @@ public class TimeManager
     }
 
     public GameTime gameTime;
+
+    public float deltaTime;
 }

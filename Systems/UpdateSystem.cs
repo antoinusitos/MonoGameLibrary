@@ -9,10 +9,11 @@ public class UpdateSystem : GameSytem
     {
         for (int entityIndex = 0; entityIndex < RegisterManager.Instance.registeredUpdaters.Count; entityIndex++)
         {
-            if (RegisterManager.Instance.registeredUpdaters[entityIndex] != null && RegisterManager.Instance.registeredUpdaters[entityIndex].CanUpdate)
+            if (RegisterManager.Instance.registeredUpdaters[entityIndex] == null || !RegisterManager.Instance.registeredUpdaters[entityIndex].CanUpdate || !RegisterManager.Instance.registeredUpdaters[entityIndex].Active)
             {
-                RegisterManager.Instance.registeredUpdaters[entityIndex].Update(deltaTime);
+                continue;
             }
+            RegisterManager.Instance.registeredUpdaters[entityIndex].Update(deltaTime);
         }
     }
 }
