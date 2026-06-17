@@ -37,6 +37,8 @@ public class RegisterManager
 
     public List<ParticleEmitter> registeredEmitters = new();
 
+    private uint id = 0;
+
     public void ClearAll()
     {
         registeredEntities.Clear();
@@ -49,6 +51,8 @@ public class RegisterManager
 
     public void RegisterEntity(Entity entity)
     {
+        entity.ID = id;
+        id++;
         registeredEntities.Add(entity);
         if (entity.CanCollide)
         {
@@ -87,6 +91,13 @@ public class RegisterManager
         {
             registeredParticles.Remove((Particle)entity);
         }
+    }
+
+    public void ClearAllExceptPlayer(Entity player)
+    {
+        ClearAll();
+
+        RegisterEntity(player);
     }
 
     public void RegisterEmitter(ParticleEmitter emitter)

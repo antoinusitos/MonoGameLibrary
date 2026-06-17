@@ -20,13 +20,17 @@ public class CollisionSystem : GameSytem
                 var self = RegisterManager.Instance.registeredColliders[entityIndex];
                 if (self.IsTrigger)
                 {
-                    triggers.Add((Trigger)self);
+                    if (!triggers.Contains((Trigger)self))
+                    {
+                        triggers.Add((Trigger)self);
+                    }
                 }
                 bool collidedThisFrame = false;
                 Entity collidedWith = null;
 
                 // X RESOLUTION
-                self.SetPosition(self.Position + new Vector2(self.Velocity.X, 0));
+                self.SetPosition(self.Position + new Vector2(self.Velocity.X, 0) * deltaTime);
+
                 if (self.Velocity.X !=  0)
                 {
                     SceneManager.Instance.SetIsDirty(true);
@@ -62,14 +66,14 @@ public class CollisionSystem : GameSytem
 
                                 if (self.IsTrigger)
                                 {
-                                    if (other.Parent != self.Parent && !((Trigger)other).entitiesThisFrame.Contains(other) && self.Parent is IInteractable)
+                                    if (other.Parent != self.Parent && !((Trigger)other).entitiesThisFrame.Contains(other)/*  && self.Parent is IInteractable*/)
                                     {
                                         ((Trigger)self).entitiesThisFrame.Add(other.Parent);
                                     }
                                 }
                                 else
                                 {
-                                    if (self != other.Parent && !((Trigger)other).entitiesThisFrame.Contains(self) && self is IInteractable)
+                                    if (self != other.Parent && !((Trigger)other).entitiesThisFrame.Contains(self)/*  && self is IInteractable*/)
                                     {
                                         ((Trigger)other).entitiesThisFrame.Add(self);
                                     }
@@ -79,14 +83,14 @@ public class CollisionSystem : GameSytem
                             {
                                 if (other.IsTrigger)
                                 {
-                                    if (other.Parent != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other.Parent is IInteractable)
+                                    if (other.Parent != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other)/*  && other.Parent is IInteractable*/)
                                     {
                                         ((Trigger)self).entitiesThisFrame.Add(other.Parent);
                                     }
                                 }
                                 else
                                 {
-                                    if (other != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other) && other is IInteractable)
+                                    if (other != self.Parent && !((Trigger)self).entitiesThisFrame.Contains(other)/* && other is IInteractable*/)
                                     {
                                         ((Trigger)self).entitiesThisFrame.Add(other);
                                     }
@@ -99,7 +103,7 @@ public class CollisionSystem : GameSytem
                 }
 
                 // Y RESOLUTION
-                self.SetPosition(self.Position + new Vector2(0, self.Velocity.Y));
+                self.SetPosition(self.Position + new Vector2(0, self.Velocity.Y) * deltaTime);
                 if (self.Velocity.Y != 0)
                 {
                     SceneManager.Instance.SetIsDirty(true);

@@ -6,6 +6,8 @@ public static class Debug
 
     public static Texture2D DebugTexture;
 
+    public static SpriteFont DebugFont;
+
     public static void Log(string message)
     {
         System.Diagnostics.Debug.WriteLine(message);

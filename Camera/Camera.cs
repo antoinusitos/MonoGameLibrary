@@ -10,6 +10,9 @@ public class Camera2D
     protected Matrix    _transform; // Matrix Transform
 
     protected Vector2   _position; // Camera Position
+
+    public Matrix       screenScaleMatrix;
+
     public Vector2      Position
     {
         get { return _position; }

@@ -5,6 +5,7 @@ using MonoGameLibrary.Graphics;
 using MonoGameLibrary.Managers;
 using MonoGameLibrary.Misc;
 using MonoGameLibrary.Shapes;
+using System.Collections.Generic;
 
 namespace MonoGameLibrary.Entities;
 
@@ -68,13 +69,23 @@ public class Entity
     protected Color _color = Color.White;
     public Color Color => _color;
 
+    public Color DebugColor = new Color(0, 255, 0, 100);
+
     protected Entity _parent = null;
     public Entity Parent => _parent;
 
-    protected Entity _children = null;
-    public Entity Children => _children;
+    protected List<Entity> _children = new List<Entity>();
+    public List<Entity> Children => _children;
 
     public bool PendingDestroy = false;
+
+    public uint ID = 0;
+
+    protected bool _useGravity;
+    public bool UseGravity => _useGravity;
+
+    protected float _mass = 1f;
+    public float Mass => _mass;
 
     public Entity(string name)
     {
@@ -116,16 +127,6 @@ public class Entity
             return;
         }
 
-        if (_canCollide && Debug.DRAW_AABB)
-        {
-            Vector2 pos = new Vector2(_position.X,_position.Y);
-            if (_parent != null)
-            {
-                pos += _relativePosition;
-            }
-            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)pos.X, (int)pos.Y, (int)(_collider.Width * _collider.Scale), (int)(_collider.Height * _collider.Scale)), new Color(0, 255, 0, 100));
-        }
-
         if (_animatedSprite != null)
         {
             _animatedSprite.Draw(spriteBatch, _position, _scale, _color);
@@ -133,6 +134,16 @@ public class Entity
         if (_sprite != null)
         {
             _sprite.Draw(spriteBatch, _position, _scale, _color);
+        }
+
+        if (_canCollide && Debug.DRAW_AABB)
+        {
+            Vector2 pos = new Vector2(_position.X, _position.Y);
+            if (_parent != null)
+            {
+                pos += _relativePosition;
+            }
+            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)pos.X, (int)pos.Y, (int)(_collider.Width * _collider.Scale), (int)(_collider.Height * _collider.Scale)), new Rectangle(0, 0, 8, 8), DebugColor, 0, Vector2.Zero, SpriteEffects.None, 0f);
         }
 
         if (Debug.DRAW_AABB)
@@ -164,9 +175,9 @@ public class Entity
             _collider.X = _position.X;
             _collider.Y = _position.Y;
         }
-        if (_children != null)
+        for (int i = 0; i < _children.Count; i++)
         {
-            _children.SetPosition(position);
+            _children[i].SetPosition(position);
         }
     }
 
@@ -188,9 +199,9 @@ public class Entity
             _collider.X = _position.X;
             _collider.Y = _position.Y;
         }
-        if (_children != null)
+        for (int i = 0; i < _children.Count; i++)
         {
-            _children.SetPosition(_position);
+            _children[i].SetPosition(_position);
         }
     }
 
@@ -221,7 +232,7 @@ public class Entity
 
     public void AttachTo(Entity entity)
     {
-        entity._children = this;
+        entity._children.Add(this);
         _parent = entity;
     }
 
@@ -242,5 +253,15 @@ public class Entity
     public void SetActive(bool active)
     {
         _active = active;
+    }
+
+    public void SetLayer(int newLayer)
+    {
+        _layer = newLayer;
+    }
+
+    public void SetCollision(bool newState)
+    {
+        _canCollide = newState;
     }
 }

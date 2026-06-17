@@ -66,7 +66,8 @@ public class Core : Game
     public static ParticleSystem ParticleSystem { get; private set; }
     public static RenderSystem RenderSystem { get; private set; }
     public static InteractionSystem InteractionSystem { get; private set; }
-    
+    public static SortingSystem SortingSystem { get; private set; }
+
 
     private RegisterManager _registerManager;
 
@@ -75,6 +76,15 @@ public class Core : Game
     public static CollisionSystem CollisionSystem { get; private set; }
 
     public static MoveSystem MoveSystem { get; private set; }
+
+    public static int _realWidth = 320;
+    public static int _realHeight = 180;
+
+    public static int _renderedWidth = 1920;
+    public static int _renderedHeight = 1080;
+    private bool _isResizing = false;
+    public Viewport _viewport;
+
 
     /// <summary>
     /// Creates a new Core instance.
@@ -98,8 +108,8 @@ public class Core : Game
         Graphics = new GraphicsDeviceManager(this);
 
         // Set the graphics defaults.
-        Graphics.PreferredBackBufferWidth = width;
-        Graphics.PreferredBackBufferHeight = height;
+        Graphics.PreferredBackBufferWidth = _renderedWidth;
+        Graphics.PreferredBackBufferHeight = _renderedHeight;
         Graphics.IsFullScreen = fullScreen;
 
         // Apply the graphic presentation changes.
@@ -120,6 +130,19 @@ public class Core : Game
 
         // Exit on escape is true by default
         ExitOnEscape = true;
+
+        Window.AllowUserResizing = true;
+        Window.ClientSizeChanged += OnClientSizeChanged;
+    }
+
+    private void OnClientSizeChanged(object sender, EventArgs e)
+    {
+        if (!_isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        {
+            _isResizing = true;
+            UpdateScreenScaleMatrix();
+            _isResizing = false;
+        }
     }
 
     protected override void Initialize()
@@ -149,6 +172,7 @@ public class Core : Game
         CollisionSystem = new CollisionSystem();
         MoveSystem = new MoveSystem();
         InteractionSystem = new InteractionSystem();
+        SortingSystem = new SortingSystem();
 
         ParticleSystem = new ParticleSystem();
 
@@ -165,6 +189,16 @@ public class Core : Game
 
         Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
         Debug.DebugTexture.SetData(new Color[] { Color.White });
+
+        Debug.DebugFont = RessourceManager.Instance.GetOrAddSpriteFont("fonts/04B_30");
+
+        UpdateScreenScaleMatrix();
+    }
+
+    protected override void LoadContent()
+    {
+        base.LoadContent();
+
     }
 
     protected override void UnloadContent()
@@ -201,7 +235,11 @@ public class Core : Game
         CollisionSystem.Update(deltaTime);
         MoveSystem.Update(deltaTime);
         ParticleSystem.Update(deltaTime);
-        InteractionSystem.Update(deltaTime);
+        if (GameManager.UseInteractionSystem)
+        {
+            InteractionSystem.Update(deltaTime);
+        }
+        SortingSystem.Update(deltaTime);
 
         if (_UIManager.currentUIEntity != null)
         {
@@ -222,8 +260,10 @@ public class Core : Game
         // Clear the back buffer.
         GraphicsDevice.Clear(Color.Black);
 
+        GraphicsDevice.Viewport = _viewport;
+
         // Begin the sprite batch to prepare for rendering.
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.GetTransformation(GraphicsDevice), sortMode: SpriteSortMode.BackToFront);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.screenScaleMatrix, sortMode: SpriteSortMode.Deferred);
 
         SceneManager.Instance.ActiveScene.Draw(deltaTime);
 
@@ -241,5 +281,37 @@ public class Core : Game
         _performanceManager.Render(SpriteBatch);
 
         base.Draw(gameTime);
+    }
+
+    private void UpdateScreenScaleMatrix()
+    {
+        float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
+        float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
+
+        if (screenWidth / _realWidth >  screenHeight / _realHeight)
+        {
+            float aspect = screenHeight / _realHeight;
+            _renderedWidth = (int)(aspect  * _realWidth);
+            _renderedHeight = (int)screenHeight;
+        }
+        else
+        {
+            float aspect = screenWidth / _realWidth;
+            _renderedWidth = (int)screenWidth;
+            _renderedHeight = (int)(aspect * _realHeight);
+        }
+
+        CameraManager.Instance.Camera.screenScaleMatrix = Matrix.CreateScale(_renderedWidth / (float)_realWidth);
+
+        _viewport = new Viewport
+        {
+            X = (int)(screenWidth / 2 - _renderedWidth / 2),
+            Y = (int)(screenHeight / 2 - _renderedHeight / 2),
+            Width = _renderedWidth,
+            Height = _renderedHeight,
+            MinDepth = 0,
+            MaxDepth = 1,
+        };
+
     }
 }

@@ -1,18 +1,50 @@
-﻿using System;
-using System.IO;
-using System.Xml;
-using System.Xml.Linq;
+﻿using System.IO;
+using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameLibrary.Graphics;
 
+public class DoorJSON
+{
+    public int id { get; set; }
+    public int x { get; set; }
+    public int y { get; set; }
+    public int toX { get; set; }
+    public int toY { get; set; }
+    public string toScene { get; set; }
+}
+
+public class NpcJSON
+{
+    public int id { get; set; }
+    public int x { get; set; }
+    public int y { get; set; }
+    public string name { get; set; }
+}
+
+public class TilemapJSON
+{
+    public string region { get; set; }
+    public int tileWidth { get; set; }
+    public int tileHeight { get; set; }
+    public int renderMaxRows { get; set; }
+    public int renderMaxCols { get; set; }
+    public string name { get; set; }
+    public string tileset { get; set; }
+    public string[] tiles { get; set; }
+    public DoorJSON[] doors { get; set; }
+    public NpcJSON[] npcs { get; set; }
+    public NpcJSON[] chests { get; set; }
+}
+
 public class Tilemap
 {
     private readonly Tileset _tileset;
     public Tileset Tileset => _tileset;
     private readonly int[] _tiles;
+
     public int[] Tiles => _tiles;
 
     /// <summary>
@@ -46,12 +78,27 @@ public class Tilemap
     public float TileHeight => _tileset.TileHeight * Scale.Y;
 
     /// <summary>
+    /// Gets the number of rows to render.
+    /// </summary>
+    public int RenderMaxRows { get; }
+
+    /// <summary>
+    /// Gets the number of columns to render.
+    /// </summary>
+    public int RenderMaxCols { get; }
+
+    /// <summary>
+    /// Gets the name of the tilemap.
+    /// </summary>
+    public string Name { get; }
+
+    /// <summary>
     /// Creates a new tilemap.
     /// </summary>
     /// <param name="tileset">The tileset used by this tilemap.</param>
     /// <param name="columns">The total number of columns in this tilemap.</param>
     /// <param name="rows">The total number of rows in this tilemap.</param>
-    public Tilemap(Tileset tileset, int columns, int rows)
+    public Tilemap(Tileset tileset, int columns, int rows, int renderMaxCols, int renderMaxRows, string name)
     {
         _tileset = tileset;
         Rows = rows;
@@ -59,6 +106,9 @@ public class Tilemap
         Count = Columns * Rows;
         Scale = Vector2.One;
         _tiles = new int[Count];
+        RenderMaxCols = renderMaxCols;
+        RenderMaxRows = renderMaxRows;
+        Name = name;
     }
 
     /// <summary>
@@ -86,146 +136,97 @@ public class Tilemap
     }
 
     /// <summary>
-    /// Gets the texture region of the tile from this tilemap at the specified index.
-    /// </summary>
-    /// <param name="index">The index of the tile in this tilemap.</param>
-    /// <returns>The texture region of the tile from this tilemap at the specified index.</returns>
-    public TextureRegion GetTile(int index)
-    {
-        return _tileset.GetTile(_tiles[index]);
-    }
-
-    /// <summary>
-    /// Gets the texture region of the tile from this tilemap at the specified
-    /// column and row.
-    /// </summary>
-    /// <param name="column">The column of the tile in this tilemap.</param>
-    /// <param name="row">The row of the tile in this tilemap.</param>
-    /// <returns>The texture region of the tile from this tilemap at the specified column and row.</returns>
-    public TextureRegion GetTile(int column, int row)
-    {
-        int index = row * Columns + column;
-        return GetTile(index);
-    }
-
-    /// <summary>
     /// Draws this tilemap using the given sprite batch.
     /// </summary>
     /// <param name="spriteBatch">The sprite batch used to draw this tilemap.</param>
     public void Draw(SpriteBatch spriteBatch)
     {
-        for (int i = 0; i < Count; i++)
-        {
-            int tilesetIndex = _tiles[i];
-            TextureRegion tile = _tileset.GetTile(tilesetIndex);
-
-            int x = i % Columns;
-            int y = i / Columns;
-
-            Vector2 position = new Vector2(x * TileWidth, y * TileHeight);
-            tile.Draw(spriteBatch, position, Color.White, 0.0f, Vector2.Zero, Scale, SpriteEffects.None, 1.0f);
-        }
+        
     }
 
-    /// <summary>
-    /// Creates a new tilemap based on a tilemap xml configuration file.
-    /// </summary>
-    /// <param name="content">The content manager used to load the texture for the tileset.</param>
-    /// <param name="filename">The path to the xml file, relative to the content root directory.</param>
-    /// <returns>The tilemap created by this method.</returns>
-    public static Tilemap FromFile(ContentManager content, string filename)
+    public static Tilemap FromJsonFile(ContentManager content, string filename, string atlas, out TilemapJSON tilemapJSONOut)
     {
         string filePath = Path.Combine(content.RootDirectory, filename);
-
-        using (Stream stream = TitleContainer.OpenStream(filePath))
+        if (!filePath.EndsWith(".json"))
         {
-            using (XmlReader reader = XmlReader.Create(stream))
+            tilemapJSONOut = null;
+            return null;
+        }
+
+        using (StreamReader r = new StreamReader(filePath))
+        {
+            string json = r.ReadToEnd();
+            TilemapJSON? tilemapJson = JsonSerializer.Deserialize<TilemapJSON>(json);
+
+            // Load the texture 2d at the content path
+            Texture2D texture = content.Load<Texture2D>(tilemapJson.tileset);
+
+            string[] split = tilemapJson.region.Split(" ");
+            int x = int.Parse(split[0]);
+            int y = int.Parse(split[1]);
+            int width = int.Parse(split[2]);
+            int height = int.Parse(split[3]);
+
+            // Create the texture region from the texture
+            TextureRegion textureRegion = new TextureRegion(texture, x, y, width, height);
+
+            // Create the tileset using the texture region
+            Tileset tileset = new Tileset(textureRegion, tilemapJson.tileWidth, tilemapJson.tileHeight, atlas);
+
+            // The <Tiles> element contains lines of strings where each line
+            // represents a row in the tilemap.  Each line is a space
+            // separated string where each element represents a column in that
+            // row.  The value of the column is the id of the tile in the
+            // tileset to draw for that location.
+            //
+            // Example:
+            // <Tiles>
+            //      00 01 01 02
+            //      03 04 04 05
+            //      03 04 04 05
+            //      06 07 07 08
+            // </Tiles>
+
+            // Split the value of the first row to determine the total number of columns
+            int columnCount = width / tilemapJson.tileWidth;
+            int rowCount = height / tilemapJson.tileHeight;
+
+            // Create the tilemap
+            Tilemap tilemap = new Tilemap(tileset, columnCount, rowCount, tilemapJson.renderMaxCols, tilemapJson.renderMaxRows, tilemapJson.name);
+
+            // Process each row
+            for (int row = 0; row < rowCount; row++)
             {
-                XDocument doc = XDocument.Load(reader);
-                XElement root = doc.Root;
-
-                // The <Tileset> element contains the information about the tileset
-                // used by the tilemap.
-                //
-                // Example
-                // <Tileset region="0 0 100 100" tileWidth="10" tileHeight="10">contentPath</Tileset>
-                //
-                // The region attribute represents the x, y, width, and height
-                // components of the boundary for the texture region within the
-                // texture at the contentPath specified.
-                //
-                // the tileWidth and tileHeight attributes specify the width and
-                // height of each tile in the tileset.
-                //
-                // the contentPath value is the contentPath to the texture to
-                // load that contains the tileset
-                XElement tilesetElement = root.Element("Tileset");
-
-                string regionAttribute = tilesetElement.Attribute("region").Value;
-                string[] split = regionAttribute.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                int x = int.Parse(split[0]);
-                int y = int.Parse(split[1]);
-                int width = int.Parse(split[2]);
-                int height = int.Parse(split[3]);
-
-                int tileWidth = int.Parse(tilesetElement.Attribute("tileWidth").Value);
-                int tileHeight = int.Parse(tilesetElement.Attribute("tileHeight").Value);
-                string contentPath = tilesetElement.Value;
-
-                // Load the texture 2d at the content path
-                Texture2D texture = content.Load<Texture2D>(contentPath);
-
-                // Create the texture region from the texture
-                TextureRegion textureRegion = new TextureRegion(texture, x, y, width, height);
-
-                // Create the tileset using the texture region
-                Tileset tileset = new Tileset(textureRegion, tileWidth, tileHeight);
-
-                // The <Tiles> element contains lines of strings where each line
-                // represents a row in the tilemap.  Each line is a space
-                // separated string where each element represents a column in that
-                // row.  The value of the column is the id of the tile in the
-                // tileset to draw for that location.
-                //
-                // Example:
-                // <Tiles>
-                //      00 01 01 02
-                //      03 04 04 05
-                //      03 04 04 05
-                //      06 07 07 08
-                // </Tiles>
-                XElement tilesElement = root.Element("Tiles");
-
-                // Split the value of the tiles data into rows by splitting on
-                // the new line character
-                string[] rows = tilesElement.Value.Trim().Split('\n', StringSplitOptions.RemoveEmptyEntries);
-
-                // Split the value of the first row to determine the total number of columns
-                int columnCount = rows[0].Split(" ", StringSplitOptions.RemoveEmptyEntries).Length;
-
-                // Create the tilemap
-                Tilemap tilemap = new Tilemap(tileset, columnCount, rows.Length);
-
-                // Process each row
-                for (int row = 0; row < rows.Length; row++)
+                // Process each column of the current row
+                for (int column = 0; column < columnCount; column++)
                 {
-                    // Split the row into individual columns
-                    string[] columns = rows[row].Trim().Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                    // Get the tileset index for this location
+                    int tilesetIndex = int.Parse(tilemapJson.tiles[row * columnCount + column]);
 
-                    // Process each column of the current row
-                    for (int column = 0; column < columnCount; column++)
+                    // Add that region to the tilemap at the row and column location
+                    tilemap.SetTile(column, row, tilesetIndex);
+
+                    Tile tile = tilemap.Tileset.GetTile(column, row);
+                    if (tilesetIndex == 1)
                     {
-                        // Get the tileset index for this location
-                        int tilesetIndex = int.Parse(columns[column]);
-
-                        // Add that region to the tilemap at the row and column location
-                        tilemap.SetTile(column, row, tilesetIndex);
+                        tile.SetSpriteName("#");
+                        tile.SetCollision(true);
                     }
+                    else
+                    {
+                        tile.SetSpriteName(".");
+                    }
+                    tile.LoadContent(Core.Content);
+                    tile.Initialize();
+                    tile.Register();
+                    tile.SetScale(0.25f);
+                    tile.SetPosition(new Vector2(column * 8, row * 8));
                 }
-
-                return tilemap;
             }
+
+            tilemapJSONOut = tilemapJson;
+
+            return tilemap;
         }
     }
-
 }

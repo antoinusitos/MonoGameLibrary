@@ -14,6 +14,11 @@ public class MoveSystem : GameSytem
             if (entity == null || !entity.CanMove || !entity.Active)
                 continue;
 
+            if (entity.UseGravity)
+            {
+                entity.Velocity += Vector2.UnitY * GameManager.Gravity * entity.Mass * deltaTime;
+            }
+
             // Skip DYNAMIC colliders: CollisionSystem already applied their velocity
             if (entity.CanCollide && entity.CollisionType == CollisionType.DYNAMIC)
                 continue;

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Media;
 using MonoGameLibrary.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace MonoGameLibrary.Managers;
 
@@ -80,18 +81,24 @@ public class RessourceManager
         }
     }
 
-    public Tilemap GetOrAddTilemap(string name)
+    public Tilemap GetOrAddTilemap(string name, out TilemapJSON tilemapJSON, string atlas = "")
     {
-        if (_loadedTilemap.ContainsKey(name))
+        Tilemap tileMap = Tilemap.FromJsonFile(Core.Content, name, atlas, out tilemapJSON);
+        //Tilemap tileMap = Tilemap.FromFile(Core.Content, name, atlas);
+
+        //_loadedTilemap.Add(name, tileMap);
+        return tileMap;
+
+        /*if (_loadedTilemap.ContainsKey(name))
         {
             return _loadedTilemap[name];
         }
         else
         {
-            Tilemap tileMap = Tilemap.FromFile(Core.Content, name);
+            Tilemap tileMap = Tilemap.FromFile(Core.Content, name, atlas);
             _loadedTilemap.Add(name, tileMap);
             return tileMap;
-        }
+        }*/
     }
 
     public SpriteFont GetOrAddSpriteFont(string name)

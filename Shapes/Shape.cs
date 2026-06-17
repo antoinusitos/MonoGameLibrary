@@ -22,5 +22,5 @@ public abstract class Shape
     /// <summary>
     /// The scale of the Shape
     /// </summary>
-    public float Scale;
+    public float Scale = 1;
 }
