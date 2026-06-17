@@ -26,14 +26,14 @@ public class Trigger : Entity
     {
         base.Initialize();
 
-        _canCollide = true;
-        _isTrigger = true;
-        _canRender = true;
-        _collisionType = CollisionType.DYNAMIC;
+        canCollide = true;
+        isTrigger = true;
+        canRender = true;
+        collisionType = CollisionType.DYNAMIC;
 
-        _collider = new Box(
-            (int)(_position.X),
-            (int)(_position.Y),
+        collider = new Box(
+            (int)(position.X),
+            (int)(position.Y),
             64,
             64
         );
@@ -78,7 +78,7 @@ public class Trigger : Entity
 
     public void SetTriggerSize(Vector2 size)
     {
-        _collider.Width = size.X;
-        _collider.Height = size.Y;
+        collider.Width = size.X;
+        collider.Height = size.Y;
     }
 }

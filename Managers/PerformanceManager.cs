@@ -13,12 +13,12 @@ namespace MonoGameLibrary.Managers;
 
 public class PerformanceManager
 {
-    internal static PerformanceManager s_instance;
+    internal static PerformanceManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static PerformanceManager Instance => s_instance;
+    public static PerformanceManager Instance => instance;
 
     /// <summary>
     /// Creates a new RegisterManager.
@@ -26,13 +26,13 @@ public class PerformanceManager
     public PerformanceManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single PerformanceManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
     }
 
     // The SpriteFont Description used to draw text

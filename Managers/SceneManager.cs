@@ -5,45 +5,45 @@ namespace MonoGameLibrary.Managers;
 
 public class SceneManager
 {
-    internal static SceneManager s_instance;
+    internal static SceneManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static SceneManager Instance => s_instance;
+    public static SceneManager Instance => instance;
 
     // The scene that is currently active.
-    private Scene _activeScene;
-    public Scene ActiveScene => _activeScene;
+    private Scene activeScene;
+    public Scene ActiveScene => activeScene;
 
     // The next scene to switch to, if there is one.
-    private Scene _nextScene;
+    private Scene nextScene;
 
-    private bool _isDirty = true;
-    public bool IsDirty => _isDirty;
+    private bool isDirty = true;
+    public bool IsDirty => isDirty;
 
     public SceneManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single SceneManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
     }
 
     public void Update(float deltaTime)
     {
-        if (_activeScene != null)
+        if (activeScene != null)
         {
-            _activeScene.Update(deltaTime);
+            activeScene.Update(deltaTime);
         }
 
         // if there is a next scene waiting to be switch to, then transition
         // to that scene.
-        if (_nextScene != null)
+        if (nextScene != null)
         {
             TransitionScene();
         }
@@ -53,40 +53,40 @@ public class SceneManager
     {
         // Only set the next scene value if it is not the same
         // instance as the currently active scene.
-        if (_activeScene != next)
+        if (activeScene != next)
         {
-            _nextScene = next;
+            nextScene = next;
         }
     }
 
     private void TransitionScene()
     {
         // If there is an active scene, dispose of it.
-        if (_activeScene != null)
+        if (activeScene != null)
         {
-            _activeScene.Dispose();
+            activeScene.Dispose();
         }
 
         // Force the garbage collector to collect to ensure memory is cleared.
         GC.Collect();
 
         // Change the currently active scene to the new scene.
-        _activeScene = _nextScene;
+        activeScene = nextScene;
 
         // Null out the next scene value so it does not trigger a change over and over.
-        _nextScene = null;
+        nextScene = null;
 
         // If the active scene now is not null, initialize it.
         // Remember, just like with Game, the Initialize call also calls the
         // Scene.LoadContent
-        if (_activeScene != null)
+        if (activeScene != null)
         {
-            _activeScene.Initialize();
+            activeScene.Initialize();
         }
     }
 
     public void SetIsDirty(bool value)
     {
-        _isDirty = value;
+        isDirty = value;
     }
 }

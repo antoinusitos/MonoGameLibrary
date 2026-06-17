@@ -12,12 +12,12 @@ namespace MonoGameLibrary;
 
 public class Core : Game
 {
-    internal static Core s_instance;
+    internal static Core instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static Core Instance => s_instance;
+    public static Core Instance => instance;
 
     /// <summary>
     /// Gets the graphics device manager to control the presentation of graphics.
@@ -49,17 +49,21 @@ public class Core : Game
     /// </summary>
     public static AudioController Audio { get; private set; }
 
-    private SceneManager _sceneManager;
+    private SceneManager sceneManager;
 
-    private RessourceManager _ressourceManager;
+    private RessourceManager ressourceManager;
 
-    private InputManager _inputManager;
+    private InputManager inputManager;
 
-    private TimeManager _timeManager;
+    private TimeManager timeManager;
 
-    private UIManager _UIManager;
+    private UIManager UIManager;
 
-    private PerformanceManager _performanceManager;
+    private PerformanceManager performanceManager;
+
+    private RegisterManager registerManager;
+
+    private CameraManager cameraManager;
 
     public static UpdateSystem UpdateSystem { get; private set; }
 
@@ -68,22 +72,17 @@ public class Core : Game
     public static InteractionSystem InteractionSystem { get; private set; }
     public static SortingSystem SortingSystem { get; private set; }
 
-
-    private RegisterManager _registerManager;
-
-    private CameraManager _cameraManager;
-
     public static CollisionSystem CollisionSystem { get; private set; }
 
     public static MoveSystem MoveSystem { get; private set; }
 
-    public static int _realWidth = 320;
-    public static int _realHeight = 180;
+    public static int realWidth = 320;
+    public static int realHeight = 180;
 
-    public static int _renderedWidth = 1920;
-    public static int _renderedHeight = 1080;
-    private bool _isResizing = false;
-    public Viewport _viewport;
+    public static int renderedWidth = 1920;
+    public static int renderedHeight = 1080;
+    private bool isResizing = false;
+    public Viewport viewport;
 
 
     /// <summary>
@@ -96,20 +95,20 @@ public class Core : Game
     public Core(string title, int width, int height, bool fullScreen)
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single Core instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
 
         // Create a new graphics device manager.
         Graphics = new GraphicsDeviceManager(this);
 
         // Set the graphics defaults.
-        Graphics.PreferredBackBufferWidth = _renderedWidth;
-        Graphics.PreferredBackBufferHeight = _renderedHeight;
+        Graphics.PreferredBackBufferWidth = renderedWidth;
+        Graphics.PreferredBackBufferHeight = renderedHeight;
         Graphics.IsFullScreen = fullScreen;
 
         // Apply the graphic presentation changes.
@@ -137,11 +136,11 @@ public class Core : Game
 
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
-        if (!_isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        if (!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
         {
-            _isResizing = true;
+            isResizing = true;
             UpdateScreenScaleMatrix();
-            _isResizing = false;
+            isResizing = false;
         }
     }
 
@@ -156,17 +155,17 @@ public class Core : Game
         // Create the sprite batch instance.
         SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-        _timeManager = new TimeManager();
+        timeManager = new TimeManager();
 
-        _ressourceManager = new RessourceManager();
+        ressourceManager = new RessourceManager();
 
         // Create a new input manager.
-        _inputManager = new InputManager();
+        inputManager = new InputManager();
 
         // Create a new audio controller.
         Audio = new AudioController();
 
-        _sceneManager = new SceneManager();
+        sceneManager = new SceneManager();
 
         UpdateSystem = new UpdateSystem();
         CollisionSystem = new CollisionSystem();
@@ -178,14 +177,14 @@ public class Core : Game
 
         RenderSystem = new RenderSystem();
 
-        _registerManager = new RegisterManager();
+        registerManager = new RegisterManager();
 
-        _cameraManager = new CameraManager();
+        cameraManager = new CameraManager();
 
-        _UIManager = new UIManager();
+        UIManager = new UIManager();
 
-        _performanceManager = new PerformanceManager();
-        _performanceManager.LoadContent(Content);
+        performanceManager = new PerformanceManager();
+        performanceManager.LoadContent(Content);
 
         Debug.DebugTexture = new Texture2D(SpriteBatch.GraphicsDevice, 1, 1);
         Debug.DebugTexture.SetData(new Color[] { Color.White });
@@ -213,16 +212,16 @@ public class Core : Game
     {
         float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        _timeManager.gameTime = gameTime;
-        _timeManager.deltaTime = deltaTime;
+        timeManager.gameTime = gameTime;
+        timeManager.deltaTime = deltaTime;
 
         // Update the input manager.
-        _inputManager.Update(deltaTime);
+        inputManager.Update(deltaTime);
 
         // Update the audio controller.
         Audio.Update();
 
-        if (ExitOnEscape && _inputManager.Keyboard.IsKeyDown(Keys.Escape))
+        if (ExitOnEscape && inputManager.Keyboard.IsKeyDown(Keys.Escape))
         {
             Exit();
         }
@@ -241,14 +240,14 @@ public class Core : Game
         }
         SortingSystem.Update(deltaTime);
 
-        if (_UIManager.currentUIEntity != null)
+        if (UIManager.currentUIEntity != null)
         {
-            _UIManager.currentUIEntity.Update(deltaTime);
+            UIManager.currentUIEntity.Update(deltaTime);
         }
 
         SceneManager.Instance.ActiveScene.UpdateUI(deltaTime);
 
-        _performanceManager.Update(deltaTime);
+        performanceManager.Update(deltaTime);
 
         base.Update(gameTime);
     }
@@ -260,7 +259,7 @@ public class Core : Game
         // Clear the back buffer.
         GraphicsDevice.Clear(Color.Black);
 
-        GraphicsDevice.Viewport = _viewport;
+        GraphicsDevice.Viewport = viewport;
 
         // Begin the sprite batch to prepare for rendering.
         SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.screenScaleMatrix, sortMode: SpriteSortMode.Deferred);
@@ -273,12 +272,12 @@ public class Core : Game
         // Always end the sprite batch when finished.
         SpriteBatch.End();
 
-        if (_UIManager.currentUIEntity != null)
+        if (UIManager.currentUIEntity != null)
         {
-            _UIManager.currentUIEntity.Render(SpriteBatch);
+            UIManager.currentUIEntity.Render(SpriteBatch);
         }
 
-        _performanceManager.Render(SpriteBatch);
+        performanceManager.Render(SpriteBatch);
 
         base.Draw(gameTime);
     }
@@ -288,27 +287,27 @@ public class Core : Game
         float screenWidth = GraphicsDevice.PresentationParameters.BackBufferWidth;
         float screenHeight = GraphicsDevice.PresentationParameters.BackBufferHeight;
 
-        if (screenWidth / _realWidth >  screenHeight / _realHeight)
+        if (screenWidth / realWidth >  screenHeight / realHeight)
         {
-            float aspect = screenHeight / _realHeight;
-            _renderedWidth = (int)(aspect  * _realWidth);
-            _renderedHeight = (int)screenHeight;
+            float aspect = screenHeight / realHeight;
+            renderedWidth = (int)(aspect  * realWidth);
+            renderedHeight = (int)screenHeight;
         }
         else
         {
-            float aspect = screenWidth / _realWidth;
-            _renderedWidth = (int)screenWidth;
-            _renderedHeight = (int)(aspect * _realHeight);
+            float aspect = screenWidth / realWidth;
+            renderedWidth = (int)screenWidth;
+            renderedHeight = (int)(aspect * realHeight);
         }
 
-        CameraManager.Instance.Camera.screenScaleMatrix = Matrix.CreateScale(_renderedWidth / (float)_realWidth);
+        CameraManager.Instance.Camera.screenScaleMatrix = Matrix.CreateScale(renderedWidth / (float)realWidth);
 
-        _viewport = new Viewport
+        viewport = new Viewport
         {
-            X = (int)(screenWidth / 2 - _renderedWidth / 2),
-            Y = (int)(screenHeight / 2 - _renderedHeight / 2),
-            Width = _renderedWidth,
-            Height = _renderedHeight,
+            X = (int)(screenWidth / 2 - renderedWidth / 2),
+            Y = (int)(screenHeight / 2 - renderedHeight / 2),
+            Width = renderedWidth,
+            Height = renderedHeight,
             MinDepth = 0,
             MaxDepth = 1,
         };

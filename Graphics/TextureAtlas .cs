@@ -12,7 +12,7 @@ namespace MonoGameLibrary.Graphics;
 
 public class TextureAtlas
 {
-    private Dictionary<string, TextureRegion> _regions;
+    private Dictionary<string, TextureRegion> regions;
 
     /// <summary>
     /// Gets or Sets the source texture represented by this texture atlas.
@@ -20,15 +20,15 @@ public class TextureAtlas
     public Texture2D Texture { get; set; }
 
     // Stores animations added to this atlas.
-    private Dictionary<string, Animation> _animations;
+    private Dictionary<string, Animation> animations;
 
     /// <summary>
     /// Creates a new texture atlas.
     /// </summary>
     public TextureAtlas()
     {
-        _regions = new Dictionary<string, TextureRegion>();
-        _animations = new Dictionary<string, Animation>();
+        regions = new Dictionary<string, TextureRegion>();
+        animations = new Dictionary<string, Animation>();
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ public class TextureAtlas
     public TextureAtlas(Texture2D texture)
     {
         Texture = texture;
-        _regions = new Dictionary<string, TextureRegion>();
-        _animations = new Dictionary<string, Animation>();
+        regions = new Dictionary<string, TextureRegion>();
+        animations = new Dictionary<string, Animation>();
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class TextureAtlas
     public void AddRegion(string name, int x, int y, int width, int height)
     {
         TextureRegion region = new TextureRegion(Texture, x, y, width, height);
-        _regions.Add(name, region);
+        regions.Add(name, region);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public class TextureAtlas
     /// <returns>The TextureRegion with the specified name.</returns>
     public TextureRegion GetRegion(string name)
     {
-        return _regions[name];
+        return regions[name];
     }
 
     /// <summary>
@@ -73,7 +73,7 @@ public class TextureAtlas
     /// <returns></returns>
     public bool RemoveRegion(string name)
     {
-        return _regions.Remove(name);
+        return regions.Remove(name);
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ public class TextureAtlas
     /// </summary>
     public void Clear()
     {
-        _regions.Clear();
+        regions.Clear();
     }
 
     /// <summary>
@@ -194,7 +194,7 @@ public class TextureAtlas
     /// <param name="animation">The animation to add.</param>
     public void AddAnimation(string animationName, Animation animation)
     {
-        _animations.Add(animationName, animation);
+        animations.Add(animationName, animation);
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public class TextureAtlas
     /// <returns>The animation with the specified name.</returns>
     public Animation GetAnimation(string animationName)
     {
-        return _animations[animationName];
+        return animations[animationName];
     }
 
     /// <summary>
@@ -214,7 +214,7 @@ public class TextureAtlas
     /// <returns>true if the animation is removed successfully; otherwise, false.</returns>
     public bool RemoveAnimation(string animationName)
     {
-        return _animations.Remove(animationName);
+        return animations.Remove(animationName);
     }
 
     /// <summary>

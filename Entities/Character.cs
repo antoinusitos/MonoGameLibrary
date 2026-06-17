@@ -4,8 +4,8 @@ namespace MonoGameLibrary.Entities;
 
 public class Character : Entity
 {
-    protected IInteractable _interactionTarget = null;
-    public IInteractable InteractionTarget => _interactionTarget;
+    protected IInteractable interactionTarget = null;
+    public IInteractable InteractionTarget => interactionTarget;
 
     public Character(string name) : base(name)
     {
@@ -14,14 +14,14 @@ public class Character : Entity
 
     public void SetInteractionTarget(IInteractable target)
     {
-        _interactionTarget = target;
+        interactionTarget = target;
     }
 
     public virtual void InteractWithTarget()
     {
-        if (_interactionTarget != null)
+        if (interactionTarget != null)
         {
-            _interactionTarget.OnInteract(this);
+            interactionTarget.OnInteract(this);
         }
     }
 }

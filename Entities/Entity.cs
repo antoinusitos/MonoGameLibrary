@@ -11,81 +11,81 @@ namespace MonoGameLibrary.Entities;
 
 public class Entity
 {
-    protected bool _canUpdate;
-    public bool CanUpdate => _canUpdate;
+    protected bool canUpdate;
+    public bool CanUpdate => canUpdate;
 
-    protected bool _canInteract;
-    public bool CanInteract => _canInteract;
+    protected bool canInteract;
+    public bool CanInteract => canInteract;
 
     protected bool _wantToInteract;
     public bool WantToInteract => _wantToInteract;
     
-    protected bool _canRender;
-    public bool CanRender => _canRender;
+    protected bool canRender;
+    public bool CanRender => canRender;
 
-    protected bool _canCollide;
-    public bool CanCollide => _canCollide;
+    protected bool canCollide;
+    public bool CanCollide => canCollide;
 
-    protected bool _canMove;
-    public bool CanMove => _canMove;
+    protected bool canMove;
+    public bool CanMove => canMove;
 
     protected string _entityName;
     public string EntityName => _entityName;
 
-    protected bool _isParticle;
-    public bool IsParticle => _isParticle;
+    protected bool isParticle;
+    public bool IsParticle => isParticle;
 
-    protected bool _active = true;
-    public bool Active => _active;
+    protected bool active = true;
+    public bool Active => active;
 
-    protected Vector2 _position;
-    public Vector2 Position => _parent != null ? _parent.Position + _relativePosition : _position;
+    protected Vector2 position;
+    public Vector2 Position => parent != null ? parent.Position + relativePosition : position;
 
-    protected Vector2 _relativePosition;
-    public Vector2 RelativePosition => _relativePosition;
+    protected Vector2 relativePosition;
+    public Vector2 RelativePosition => relativePosition;
 
-    protected Vector2 _velocity;
+    protected Vector2 velocity;
     public Vector2 Velocity;// => _velocity;
 
-    protected AnimatedSprite _animatedSprite;
+    protected AnimatedSprite animatedSprite;
 
-    protected Sprite _sprite;
+    protected Sprite sprite;
 
-    protected Box _collider;
-    public Box Collider => _collider;
+    protected Box collider;
+    public Box Collider => collider;
 
-    protected bool _isTrigger;
-    public bool IsTrigger => _isTrigger;
+    protected bool isTrigger;
+    public bool IsTrigger => isTrigger;
 
-    protected CollisionType _collisionType;
-    public CollisionType CollisionType => _collisionType;
+    protected CollisionType collisionType;
+    public CollisionType CollisionType => collisionType;
 
-    protected float _scale = 1f;
-    public float Scale => _scale;
+    protected float scale = 1f;
+    public float Scale => scale;
 
-    protected int _layer = 0;
-    public int Layer => _layer;
+    protected int layer = 0;
+    public int Layer => layer;
 
-    protected Color _color = Color.White;
-    public Color Color => _color;
+    protected Color color = Color.White;
+    public Color Color => color;
 
     public Color DebugColor = new Color(0, 255, 0, 100);
 
-    protected Entity _parent = null;
-    public Entity Parent => _parent;
+    protected Entity parent = null;
+    public Entity Parent => parent;
 
-    protected List<Entity> _children = new List<Entity>();
-    public List<Entity> Children => _children;
+    protected List<Entity> children = new List<Entity>();
+    public List<Entity> Children => children;
 
     public bool PendingDestroy = false;
 
     public uint ID = 0;
 
-    protected bool _useGravity;
-    public bool UseGravity => _useGravity;
+    protected bool useGravity;
+    public bool UseGravity => useGravity;
 
-    protected float _mass = 1f;
-    public float Mass => _mass;
+    protected float mass = 1f;
+    public float Mass => mass;
 
     public Entity(string name)
     {
@@ -103,15 +103,15 @@ public class Entity
 
     public virtual void Update(float deltaTime)
     {
-        if (_animatedSprite != null)
+        if (animatedSprite != null)
         {
-            if (_collider != null)
+            if (collider != null)
             {
-                _collider.X = _position.X;
-                _collider.Y = _position.Y;
+                collider.X = position.X;
+                collider.Y = position.Y;
             }
 
-            _animatedSprite.Update(deltaTime);
+            animatedSprite.Update(deltaTime);
         }
     }
 
@@ -122,107 +122,107 @@ public class Entity
 
     public virtual void Render(SpriteBatch spriteBatch)
     {
-        if (_active == false)
+        if (active == false)
         {
             return;
         }
 
-        if (_animatedSprite != null)
+        if (animatedSprite != null)
         {
-            _animatedSprite.Draw(spriteBatch, _position, _scale, _color);
+            animatedSprite.Draw(spriteBatch, position, scale, color);
         }
-        if (_sprite != null)
+        if (sprite != null)
         {
-            _sprite.Draw(spriteBatch, _position, _scale, _color);
+            sprite.Draw(spriteBatch, position, scale, color);
         }
 
-        if (_canCollide && Debug.DRAW_AABB)
+        if (canCollide && Debug.DRAW_AABB)
         {
-            Vector2 pos = new Vector2(_position.X, _position.Y);
-            if (_parent != null)
+            Vector2 pos = new Vector2(position.X, position.Y);
+            if (parent != null)
             {
-                pos += _relativePosition;
+                pos += relativePosition;
             }
-            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)pos.X, (int)pos.Y, (int)(_collider.Width * _collider.Scale), (int)(_collider.Height * _collider.Scale)), new Rectangle(0, 0, 8, 8), DebugColor, 0, Vector2.Zero, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)pos.X, (int)pos.Y, (int)(collider.Width * collider.Scale), (int)(collider.Height * collider.Scale)), new Rectangle(0, 0, 8, 8), DebugColor, 0, Vector2.Zero, SpriteEffects.None, 0f);
         }
 
         if (Debug.DRAW_AABB)
         {
-            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_position.X, (int)_position.Y, 5, 5), Color.Red);
+            spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)position.X, (int)position.Y, 5, 5), Color.Red);
 
-            if (_collider != null)
+            if (collider != null)
             {
-                spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_collider.X, (int)_collider.Y, 5, 5), Color.Orange);
+                spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)collider.X, (int)collider.Y, 5, 5), Color.Orange);
             }
         }
     }
 
     public virtual void SetPosition(Vector2 position)
     {
-        if (_parent != null)
+        if (parent != null)
         {
-            _position = position + _relativePosition;
-            if (_collider != null)
+            this.position = position + relativePosition;
+            if (collider != null)
             {
-                _collider.X = _position.X;
-                _collider.Y = _position.Y;
+                collider.X = this.position.X;
+                collider.Y = this.position.Y;
             }
             return;
         }
-        _position = position;
-        if (_collider != null)
+        this.position = position;
+        if (collider != null)
         {
-            _collider.X = _position.X;
-            _collider.Y = _position.Y;
+            collider.X = this.position.X;
+            collider.Y = this.position.Y;
         }
-        for (int i = 0; i < _children.Count; i++)
+        for (int i = 0; i < children.Count; i++)
         {
-            _children[i].SetPosition(position);
+            children[i].SetPosition(position);
         }
     }
 
     public virtual void SetPosition(float x, float y)
     {
-        if (_parent != null)
+        if (parent != null)
         {
-            _position = new Vector2(x, y) + _relativePosition;
-            if (_collider != null)
+            position = new Vector2(x, y) + relativePosition;
+            if (collider != null)
             {
-                _collider.X = _position.X;
-                _collider.Y = _position.Y;
+                collider.X = position.X;
+                collider.Y = position.Y;
             }
             return;
         }
-        _position = new Vector2(x, y);
-        if (_collider != null)
+        position = new Vector2(x, y);
+        if (collider != null)
         {
-            _collider.X = _position.X;
-            _collider.Y = _position.Y;
+            collider.X = position.X;
+            collider.Y = position.Y;
         }
-        for (int i = 0; i < _children.Count; i++)
+        for (int i = 0; i < children.Count; i++)
         {
-            _children[i].SetPosition(_position);
+            children[i].SetPosition(position);
         }
     }
 
     public virtual void SetRelativePosition(float x, float y)
     {
-        _relativePosition = new Vector2(x, y);
-        _position += _relativePosition;
+        relativePosition = new Vector2(x, y);
+        position += relativePosition;
     }
 
     public virtual void SetScale(float scale)
     { 
-        _scale = scale;
-        if (_collider != null)
+        this.scale = scale;
+        if (collider != null)
         {
-            _collider.Scale = scale;
+            collider.Scale = scale;
         }
     }
 
     public virtual void SetColor(Color color)
     {
-        _color = color;
+        this.color = color;
     }
 
     public virtual void OnCollide(Entity other)
@@ -232,16 +232,16 @@ public class Entity
 
     public void AttachTo(Entity entity)
     {
-        entity._children.Add(this);
-        _parent = entity;
+        entity.children.Add(this);
+        parent = entity;
     }
 
     public void Detach()
     {
-        if (_parent  != null)
+        if (parent  != null)
         {
-            _parent._children = null;
-            _parent = null;
+            parent.children = null;
+            parent = null;
         }
     }
 
@@ -252,16 +252,16 @@ public class Entity
 
     public void SetActive(bool active)
     {
-        _active = active;
+        this.active = active;
     }
 
     public void SetLayer(int newLayer)
     {
-        _layer = newLayer;
+        layer = newLayer;
     }
 
     public void SetCollision(bool newState)
     {
-        _canCollide = newState;
+        canCollide = newState;
     }
 }

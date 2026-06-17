@@ -6,7 +6,7 @@ namespace MonoGameLibrary.Input;
 
 public class GamePadInfo
 {
-    private float _vibrationTimeRemaining = 0.0f;
+    private float vibrationTimeRemaining = 0.0f;
 
     /// <summary>
     /// Gets the index of the player this gamepad is for.
@@ -68,11 +68,11 @@ public class GamePadInfo
         PreviousState = CurrentState;
         CurrentState = GamePad.GetState(PlayerIndex);
 
-        if (_vibrationTimeRemaining > 0f)
+        if (vibrationTimeRemaining > 0f)
         {
-            _vibrationTimeRemaining -= deltaTime;
+            vibrationTimeRemaining -= deltaTime;
 
-            if (_vibrationTimeRemaining <= 0f)
+            if (vibrationTimeRemaining <= 0f)
             {
                 StopVibration();
             }
@@ -126,7 +126,7 @@ public class GamePadInfo
     /// <param name="time">The amount of time the vibration should occur.</param>
     public void SetVibration(float strength, float time)
     {
-        _vibrationTimeRemaining = time;
+        vibrationTimeRemaining = time;
         GamePad.SetVibration(PlayerIndex, strength, strength);
     }
 

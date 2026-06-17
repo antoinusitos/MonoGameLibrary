@@ -7,40 +7,40 @@ namespace MonoGameLibrary.Particles;
 
 public class Particle : Entity
 {
-    protected float _lifeTime;
-    public float LifeTime => _lifeTime;
+    protected float lifeTime;
+    public float LifeTime => lifeTime;
 
-    protected float _lifeElapsed;
+    protected float lifeElapsed;
 
     public Particle(string name) : base(name)
     {
-        _isParticle = true;
+        isParticle = true;
     }
 
     public void SetLifeTime(float lifeTime)
     {
-        _lifeTime = lifeTime;
+        this.lifeTime = lifeTime;
     }
 
     public override void Render(SpriteBatch spriteBatch)
     {
         base.Render(spriteBatch);
 
-        spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)_position.X, (int)_position.Y, (int)(_scale), (int)(_scale)), _color);
+        spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)position.X, (int)position.Y, (int)(scale), (int)(scale)), color);
     }
 
     public override void Update(float deltaTime)
     {
         base.Update(deltaTime);
 
-        _lifeElapsed += deltaTime;
+        lifeElapsed += deltaTime;
 
-        if (_lifeElapsed >= _lifeTime)
+        if (lifeElapsed >= lifeTime)
         {
             PendingDestroy = true;
             RegisterManager.Instance.UnregisterEntity(this);
         }
 
-        SetPosition(_position + Velocity);
+        SetPosition(position + Velocity);
     }
 }

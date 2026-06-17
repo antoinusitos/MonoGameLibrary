@@ -11,10 +11,10 @@ public class AudioController : IDisposable
     private readonly List<SoundEffectInstance> _activeSoundEffectInstances;
 
     // Tracks the volume for song playback when muting and unmuting.
-    private float _previousSongVolume;
+    private float previousSongVolume;
 
     // Tracks the volume for sound effect playback when muting and unmuting.
-    private float _previousSoundEffectVolume;
+    private float previousSoundEffectVolume;
 
     /// <summary>
     /// Gets a value that indicates if audio is muted.
@@ -209,8 +209,8 @@ public class AudioController : IDisposable
     public void MuteAudio()
     {
         // Store the volume so they can be restored during ResumeAudio
-        _previousSongVolume = MediaPlayer.Volume;
-        _previousSoundEffectVolume = SoundEffect.MasterVolume;
+        previousSongVolume = MediaPlayer.Volume;
+        previousSoundEffectVolume = SoundEffect.MasterVolume;
 
         // Set all volumes to 0
         MediaPlayer.Volume = 0.0f;
@@ -225,8 +225,8 @@ public class AudioController : IDisposable
     public void UnmuteAudio()
     {
         // Restore the previous volume values.
-        MediaPlayer.Volume = _previousSongVolume;
-        SoundEffect.MasterVolume = _previousSoundEffectVolume;
+        MediaPlayer.Volume = previousSongVolume;
+        SoundEffect.MasterVolume = previousSoundEffectVolume;
 
         IsMuted = false;
     }

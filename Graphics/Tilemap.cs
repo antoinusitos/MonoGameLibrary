@@ -41,11 +41,11 @@ public class TilemapJSON
 
 public class Tilemap
 {
-    private readonly Tileset _tileset;
-    public Tileset Tileset => _tileset;
-    private readonly int[] _tiles;
+    private readonly Tileset tileset;
+    public Tileset Tileset => tileset;
+    private readonly int[] tiles;
 
-    public int[] Tiles => _tiles;
+    public int[] Tiles => tiles;
 
     /// <summary>
     /// Gets the total number of rows in this tilemap.
@@ -70,12 +70,12 @@ public class Tilemap
     /// <summary>
     /// Gets the width, in pixels, each tile is drawn at.
     /// </summary>
-    public float TileWidth => _tileset.TileWidth * Scale.X;
+    public float TileWidth => tileset.TileWidth * Scale.X;
 
     /// <summary>
     /// Gets the height, in pixels, each tile is drawn at.
     /// </summary>
-    public float TileHeight => _tileset.TileHeight * Scale.Y;
+    public float TileHeight => tileset.TileHeight * Scale.Y;
 
     /// <summary>
     /// Gets the number of rows to render.
@@ -100,12 +100,12 @@ public class Tilemap
     /// <param name="rows">The total number of rows in this tilemap.</param>
     public Tilemap(Tileset tileset, int columns, int rows, int renderMaxCols, int renderMaxRows, string name)
     {
-        _tileset = tileset;
+        this.tileset = tileset;
         Rows = rows;
         Columns = columns;
         Count = Columns * Rows;
         Scale = Vector2.One;
-        _tiles = new int[Count];
+        tiles = new int[Count];
         RenderMaxCols = renderMaxCols;
         RenderMaxRows = renderMaxRows;
         Name = name;
@@ -119,7 +119,7 @@ public class Tilemap
     /// <param name="tilesetID">The tileset id of the tile from the tileset to use.</param>
     public void SetTile(int index, int tilesetID)
     {
-        _tiles[index] = tilesetID;
+        tiles[index] = tilesetID;
     }
 
     /// <summary>

@@ -5,20 +5,20 @@ namespace MonoGameLibrary.Graphics;
 
 public class AnimatedSprite : Sprite
 {
-    private int _currentFrame;
-    private float _elapsed;
-    private Animation _animation;
+    private int currentFrame;
+    private float elapsed;
+    private Animation animation;
 
     /// <summary>
     /// Gets or Sets the animation for this animated sprite.
     /// </summary>
     public Animation Animation
     {
-        get => _animation;
+        get => animation;
         set
         {
-            _animation = value;
-            Region = _animation.Frames[0];
+            animation = value;
+            Region = animation.Frames[0];
         }
     }
 
@@ -42,19 +42,19 @@ public class AnimatedSprite : Sprite
     /// <param name="gameTime">A snapshot of the game timing values provided by the framework.</param>
     public void Update(float deltaTime)
     {
-        _elapsed += deltaTime;
+        elapsed += deltaTime;
 
-        if (_elapsed >= _animation.Delay.TotalSeconds)
+        if (elapsed >= animation.Delay.TotalSeconds)
         {
-            _elapsed -= (float)_animation.Delay.TotalSeconds;
-            _currentFrame++;
+            elapsed -= (float)animation.Delay.TotalSeconds;
+            currentFrame++;
 
-            if (_currentFrame >= _animation.Frames.Count)
+            if (currentFrame >= animation.Frames.Count)
             {
-                _currentFrame = 0;
+                currentFrame = 0;
             }
 
-            Region = _animation.Frames[_currentFrame];
+            Region = animation.Frames[currentFrame];
         }
     }
 

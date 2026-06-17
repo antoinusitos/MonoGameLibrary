@@ -27,8 +27,8 @@ public abstract class Scene : IDisposable
     public Rectangle RoomBounds;
 
     // Defines the tilemap to draw.
-    protected Tilemap _tilemap;
-    public Tilemap Tilemap => _tilemap;
+    protected Tilemap tilemap;
+    public Tilemap Tilemap => tilemap;
 
     /// <summary>
     /// Creates a new scene instance.

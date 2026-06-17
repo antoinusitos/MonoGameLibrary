@@ -7,12 +7,12 @@ namespace MonoGameLibrary.Managers;
 
 public class RegisterManager
 {
-    internal static RegisterManager s_instance;
+    internal static RegisterManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static RegisterManager Instance => s_instance;
+    public static RegisterManager Instance => instance;
 
     /// <summary>
     /// Creates a new RegisterManager.
@@ -20,13 +20,13 @@ public class RegisterManager
     public RegisterManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single RegisterManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
     }
 
     public List<Entity> registeredEntities = new();

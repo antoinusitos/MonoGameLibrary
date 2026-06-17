@@ -6,31 +6,31 @@ namespace MonoGameLibrary.Particles;
 
 public class ParticleEmitter
 {
-    protected Vector2 _position;
-    public Vector2 Position => _position;
+    protected Vector2 position;
+    public Vector2 Position => position;
 
-    protected float _scale = 1f;
-    public float Scale => _scale;
+    protected float scale = 1f;
+    public float Scale => scale;
 
-    protected float _spawnRate;
-    public float SpawnRate => _spawnRate;
+    protected float spawnRate;
+    public float SpawnRate => spawnRate;
 
-    protected float _spawnDelay;
+    protected float spawnDelay;
 
-    protected Vector2 _velocity;
-    public Vector2 Velocity => _velocity;
+    protected Vector2 velocity;
+    public Vector2 Velocity => velocity;
 
-    protected Vector2 _positionOffsetMin;
-    public Vector2 PositionOffsetMin => _positionOffsetMin;
+    protected Vector2 positionOffsetMin;
+    public Vector2 PositionOffsetMin => positionOffsetMin;
 
-    protected Vector2 _positionOffsetMax;
-    public Vector2 PositionOffsetMax => _positionOffsetMax;
+    protected Vector2 positionOffsetMax;
+    public Vector2 PositionOffsetMax => positionOffsetMax;
 
-    protected float _lifeTime;
-    public float LifeTime => _lifeTime;
+    protected float lifeTime;
+    public float LifeTime => lifeTime;
 
-    protected bool _active = true;
-    public bool Active => _active;
+    protected bool active = true;
+    public bool Active => active;
 
 
     public ParticleEmitter()
@@ -40,42 +40,42 @@ public class ParticleEmitter
 
     public virtual void SetPosition(Vector2 position)
     {
-        _position = position;
+        this.position = position;
     }
 
     public virtual void SetOffsetMin(Vector2 offsetMin)
     {
-        _positionOffsetMin = offsetMin;
+        positionOffsetMin = offsetMin;
     }
 
     public virtual void SetOffsetMax(Vector2 offsetMin)
     {
-        _positionOffsetMax = offsetMin;
+        positionOffsetMax = offsetMin;
     }
 
     public virtual void SetPosition(float x, float y)
     {
-        _position = new Vector2(x, y);
+        position = new Vector2(x, y);
     }
 
     public virtual void SetScale(float scale)
     {
-        _scale = scale;
+        this.scale = scale;
     }
 
     public virtual void SetSpawnRate(float rate)
     {
-        _spawnRate = rate;
+        spawnRate = rate;
     }
 
     public virtual void SetVelocity(Vector2 velocity)
     {
-        _velocity = velocity;
+        this.velocity = velocity;
     }
 
     public virtual void SetLifeTime(float time)
     {
-        _lifeTime = time;
+        lifeTime = time;
     }
 
     public void Register()
@@ -85,27 +85,27 @@ public class ParticleEmitter
 
     public void Update(float deltaTime)
     {
-        if (_spawnDelay > _spawnRate)
+        if (spawnDelay > spawnRate)
         {
-            _spawnDelay = 0;
+            spawnDelay = 0;
 
             Particle particle = new Particle("particle");
             particle.LoadContent(Core.Content);
             particle.Initialize();
             Vector2 offset = Vector2.Zero;
             Random random = new Random();
-            offset.X = MathHelper.Lerp(_positionOffsetMin.X, _positionOffsetMax.X, (float)random.NextDouble());
-            offset.Y = MathHelper.Lerp(_positionOffsetMin.Y, _positionOffsetMax.Y, (float)random.NextDouble());
-            particle.SetPosition(_position + offset);
-            particle.SetScale(_scale);
+            offset.X = MathHelper.Lerp(positionOffsetMin.X, positionOffsetMax.X, (float)random.NextDouble());
+            offset.Y = MathHelper.Lerp(positionOffsetMin.Y, positionOffsetMax.Y, (float)random.NextDouble());
+            particle.SetPosition(position + offset);
+            particle.SetScale(scale);
             particle.SetColor(Color.Red);
-            particle.Velocity = _velocity;
-            particle.SetLifeTime(_lifeTime);
+            particle.Velocity = velocity;
+            particle.SetLifeTime(lifeTime);
             particle.Register();
         }
         else
         {
-            _spawnDelay += deltaTime;
+            spawnDelay += deltaTime;
         }
     }
 }

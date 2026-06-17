@@ -10,38 +10,38 @@ namespace MonoGameLibrary.Graphics;
 
 public class Tile : Entity
 {
-    private string _spriteName;
-    private string _atlasName;
-    private int _index;
-    public int index => _index;
-    private int _x;
-    public int x => _x;
-    private int _y;
-    public int y => _y;
+    private string spriteName;
+    private string atlasName;
+    private int index;
+    public int Index => index;
+    private int x;
+    public int X => x;
+    private int y;
+    public int Y => y;
 
     public TileInfo tileInfo;
     public Entity entity = null;
 
     public Tile(string name, string spriteName, string atlasName, int index) : base(name)
     {
-        _canRender = true;
-        _spriteName = spriteName;
-        _atlasName = atlasName;
-        _layer = 0;
-        _index = index;
+        canRender = true;
+        this.spriteName = spriteName;
+        this.atlasName = atlasName;
+        layer = 0;
+        this.index = index;
 
-        _collisionType = CollisionType.STATIC;
+        collisionType = CollisionType.STATIC;
     }
 
     public override void Initialize()
     {
         base.Initialize();
 
-        _collider = new Box(
-            _position.X,
-            _position.Y,
-            _sprite.Width,
-            _sprite.Height
+        collider = new Box(
+            position.X,
+            position.Y,
+            sprite.Width,
+            sprite.Height
         );
     }
 
@@ -49,14 +49,14 @@ public class Tile : Entity
     {
         base.LoadContent(content);
 
-        TextureAtlas _atlas2 = RessourceManager.Instance.GetOrAddTextureAtlas(_atlasName);
+        TextureAtlas _atlas2 = RessourceManager.Instance.GetOrAddTextureAtlas(atlasName);
 
-        _sprite = RessourceManager.Instance.GetOrAddSprite(_spriteName, _atlas2);
+        sprite = RessourceManager.Instance.GetOrAddSprite(spriteName, _atlas2);
     }
 
     public void SetSpriteName(string spriteName)
     {
-        _spriteName = spriteName; 
+        this.spriteName = spriteName; 
     }
 
     public override void Render(SpriteBatch spriteBatch)

@@ -5,12 +5,12 @@ namespace MonoGameLibrary.Input;
 
 public class InputManager 
 {
-    internal static InputManager s_instance;
+    internal static InputManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static InputManager Instance => s_instance;
+    public static InputManager Instance => instance;
 
     /// <summary>
     /// Gets the state information of keyboard input.
@@ -33,13 +33,13 @@ public class InputManager
     public InputManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single InputManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
 
         Keyboard = new KeyboardInfo();
         Mouse = new MouseInfo();

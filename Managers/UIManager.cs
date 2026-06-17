@@ -9,23 +9,23 @@ namespace MonoGameLibrary.Managers;
 
 public class UIManager
 {
-    internal static UIManager s_instance;
+    internal static UIManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static UIManager Instance => s_instance;
+    public static UIManager Instance => instance;
 
     public UIManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single UIManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
     }
 
     public UIEntity currentUIEntity;

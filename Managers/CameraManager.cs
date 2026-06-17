@@ -8,12 +8,12 @@ namespace MonoGameLibrary.Managers;
 
 public  class CameraManager
 {
-    internal static CameraManager s_instance;
+    internal static CameraManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static CameraManager Instance => s_instance;
+    public static CameraManager Instance => instance;
 
     /// <summary>
     /// Creates a new RegisterManager.
@@ -21,13 +21,13 @@ public  class CameraManager
     public CameraManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single CameraManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
 
         Camera = new Camera2D();
     }

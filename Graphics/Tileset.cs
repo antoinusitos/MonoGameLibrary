@@ -4,7 +4,7 @@ namespace MonoGameLibrary.Graphics;
 
 public class Tileset
 {
-    private Tile[] _tiles;
+    private Tile[] tiles;
 
     /// <summary>
     /// Gets the width, in pixels, of each tile in this tileset.
@@ -47,11 +47,11 @@ public class Tileset
         Count = Columns * Rows;
 
         // Create the texture regions that make up each individual tile
-        _tiles = new Tile[Count];
+        tiles = new Tile[Count];
 
         for (int i = 0; i < Count; i++)
         {
-            _tiles[i] = new Tile("tile " + i, "", atlas, i);
+            tiles[i] = new Tile("tile " + i, "", atlas, i);
         }
     }
 
@@ -60,7 +60,7 @@ public class Tileset
     /// </summary>
     /// <param name="index">The index of the texture region in this tile set.</param>
     /// <returns>The texture region for the tile form this tileset at the given index.</returns>
-    public Tile GetTile(int index) => _tiles[index];
+    public Tile GetTile(int index) => tiles[index];
 
     /// <summary>
     /// Gets the texture region for the tile from this tileset at the given location.

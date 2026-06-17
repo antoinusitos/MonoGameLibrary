@@ -10,58 +10,58 @@ namespace MonoGameLibrary.Managers;
 
 public class RessourceManager
 {
-    internal static RessourceManager s_instance;
+    internal static RessourceManager instance;
 
     /// <summary>
     /// Gets a reference to the Core instance.
     /// </summary>
-    public static RessourceManager Instance => s_instance;
+    public static RessourceManager Instance => instance;
 
-    private Dictionary<string, TextureRegion> _loadedTextureRegions = new Dictionary<string, TextureRegion>();
-    private Dictionary<string, SoundEffect> _loadedSoundEffects = new Dictionary<string, SoundEffect>();
-    private Dictionary<string, TextureAtlas> _loadedTextureAtlas = new Dictionary<string, TextureAtlas>();
-    private Dictionary<string, Tilemap> _loadedTilemap = new Dictionary<string, Tilemap>();
-    private Dictionary<string, SpriteFont> _loadedSpriteFont = new Dictionary<string, SpriteFont>();
-    private Dictionary<string, Texture2D> _loadedTexture2D = new Dictionary<string, Texture2D>();
-    private Dictionary<string, Song> _loadedSong = new Dictionary<string, Song>();
-    private Dictionary<string, Sprite> _loadedSprite = new Dictionary<string, Sprite>();
+    private Dictionary<string, TextureRegion> loadedTextureRegions = new Dictionary<string, TextureRegion>();
+    private Dictionary<string, SoundEffect> loadedSoundEffects = new Dictionary<string, SoundEffect>();
+    private Dictionary<string, TextureAtlas> loadedTextureAtlas = new Dictionary<string, TextureAtlas>();
+    private Dictionary<string, Tilemap> loadedTilemap = new Dictionary<string, Tilemap>();
+    private Dictionary<string, SpriteFont> loadedSpriteFont = new Dictionary<string, SpriteFont>();
+    private Dictionary<string, Texture2D> loadedTexture2D = new Dictionary<string, Texture2D>();
+    private Dictionary<string, Song> loadedSong = new Dictionary<string, Song>();
+    private Dictionary<string, Sprite> loadedSprite = new Dictionary<string, Sprite>();
 
     public RessourceManager()
     {
         // Ensure that multiple cores are not created.
-        if (s_instance != null)
+        if (instance != null)
         {
             throw new InvalidOperationException($"Only a single RessourceManager instance can be created");
         }
 
         // Store reference to engine for global member access.
-        s_instance = this;
+        instance = this;
     }
 
     public TextureAtlas GetOrAddTextureAtlas(string name)
     {
-        if (_loadedTextureAtlas.ContainsKey(name))
+        if (loadedTextureAtlas.ContainsKey(name))
         {
-            return _loadedTextureAtlas[name];
+            return loadedTextureAtlas[name];
         }
         else
         {
             TextureAtlas atlas = TextureAtlas.FromFile(Core.Content, name);
-            _loadedTextureAtlas.Add(name, atlas);
+            loadedTextureAtlas.Add(name, atlas);
             return atlas;
         }
     }
 
     public SoundEffect GetOrAddSoundEffect(string name)
     {
-        if (_loadedSoundEffects.ContainsKey(name))
+        if (loadedSoundEffects.ContainsKey(name))
         {
-            return _loadedSoundEffects[name];
+            return loadedSoundEffects[name];
         }
         else
         {
             SoundEffect sound = Core.Content.Load<SoundEffect>(name);
-            _loadedSoundEffects.Add(name, sound);
+            loadedSoundEffects.Add(name, sound);
             return sound;
         }
     }
@@ -69,14 +69,14 @@ public class RessourceManager
 
     public TextureRegion GetOrAddTextureRegion(string name, TextureAtlas atlas)
     {
-        if (_loadedTextureRegions.ContainsKey(name))
+        if (loadedTextureRegions.ContainsKey(name))
         {
-            return _loadedTextureRegions[name];
+            return loadedTextureRegions[name];
         }
         else
         {
             TextureRegion textureRegion = atlas.GetRegion(name);
-            _loadedTextureRegions.Add(name, textureRegion);
+            loadedTextureRegions.Add(name, textureRegion);
             return textureRegion;
         }
     }
@@ -103,56 +103,56 @@ public class RessourceManager
 
     public SpriteFont GetOrAddSpriteFont(string name)
     {
-        if (_loadedSpriteFont.ContainsKey(name))
+        if (loadedSpriteFont.ContainsKey(name))
         {
-            return _loadedSpriteFont[name];
+            return loadedSpriteFont[name];
         }
         else
         {
             SpriteFont spriteFont = Core.Content.Load<SpriteFont>(name);
-            _loadedSpriteFont.Add(name, spriteFont);
+            loadedSpriteFont.Add(name, spriteFont);
             return spriteFont;
         }
     }
 
     public Texture2D GetOrAddTexture2D(string name)
     {
-        if (_loadedTexture2D.ContainsKey(name))
+        if (loadedTexture2D.ContainsKey(name))
         {
-            return _loadedTexture2D[name];
+            return loadedTexture2D[name];
         }
         else
         {
             Texture2D texture2D = Core.Content.Load<Texture2D>(name);
-            _loadedTexture2D.Add(name, texture2D);
+            loadedTexture2D.Add(name, texture2D);
             return texture2D;
         }
     }
 
     public Song GetOrAddSong(string name)
     {
-        if (_loadedSong.ContainsKey(name))
+        if (loadedSong.ContainsKey(name))
         {
-            return _loadedSong[name];
+            return loadedSong[name];
         }
         else
         {
             Song song = Core.Content.Load<Song>(name);
-            _loadedSong.Add(name, song);
+            loadedSong.Add(name, song);
             return song;
         }
     }
 
     public Sprite GetOrAddSprite(string name, TextureAtlas atlas)
     {
-        if (_loadedSprite.ContainsKey(name))
+        if (loadedSprite.ContainsKey(name))
         {
-            return _loadedSprite[name];
+            return loadedSprite[name];
         }
         else
         {
             Sprite sprite = atlas.CreateSprite(name);
-            _loadedSprite.Add(name, sprite);
+            loadedSprite.Add(name, sprite);
             return sprite;
         }
     }
