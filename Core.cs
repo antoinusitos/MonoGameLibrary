@@ -262,7 +262,7 @@ public class Core : Game
         GraphicsDevice.Viewport = viewport;
 
         // Begin the sprite batch to prepare for rendering.
-        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.screenScaleMatrix, sortMode: SpriteSortMode.Deferred);
+        SpriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: CameraManager.Instance.Camera.GetTransformation(GraphicsDevice), sortMode: SpriteSortMode.Deferred);
 
         SceneManager.Instance.ActiveScene.Draw(deltaTime);
 

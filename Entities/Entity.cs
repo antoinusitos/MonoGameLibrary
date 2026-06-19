@@ -17,8 +17,8 @@ public class Entity
     protected bool canInteract;
     public bool CanInteract => canInteract;
 
-    protected bool _wantToInteract;
-    public bool WantToInteract => _wantToInteract;
+    protected bool wantToInteract;
+    public bool WantToInteract => wantToInteract;
     
     protected bool canRender;
     public bool CanRender => canRender;
@@ -29,8 +29,8 @@ public class Entity
     protected bool canMove;
     public bool CanMove => canMove;
 
-    protected string _entityName;
-    public string EntityName => _entityName;
+    protected string entityName;
+    public string EntityName => entityName;
 
     protected bool isParticle;
     public bool IsParticle => isParticle;
@@ -44,7 +44,6 @@ public class Entity
     protected Vector2 relativePosition;
     public Vector2 RelativePosition => relativePosition;
 
-    protected Vector2 velocity;
     public Vector2 Velocity;// => _velocity;
 
     protected AnimatedSprite animatedSprite;
@@ -87,9 +86,12 @@ public class Entity
     protected float mass = 1f;
     public float Mass => mass;
 
+    protected List<Entity> ignoreCollisions = new List<Entity>();
+    public List<Entity> IgnoreCollisions => ignoreCollisions;
+
     public Entity(string name)
     {
-        _entityName = name;
+        entityName = name;
     }
 
     public virtual void LoadContent(ContentManager content)
@@ -118,6 +120,16 @@ public class Entity
     public void Register()
     {
         RegisterManager.Instance.RegisterEntity(this);
+    }
+
+    public void UnRegister()
+    {
+        for (int i = 0; i < children.Count; i++)
+        {
+            children[i].UnRegister();
+        }
+
+        RegisterManager.Instance.UnregisterEntity(this);
     }
 
     public virtual void Render(SpriteBatch spriteBatch)
@@ -247,7 +259,7 @@ public class Entity
 
     public void SetWantToInteract(bool newState)
     {
-        _wantToInteract = newState;
+        wantToInteract = newState;
     }
 
     public void SetActive(bool active)

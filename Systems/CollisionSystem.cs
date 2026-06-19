@@ -38,7 +38,7 @@ public class CollisionSystem : GameSytem
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
-                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active)
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active && !self.IgnoreCollisions.Contains(other))
                     {
                         if (!other.IsTrigger && !self.IsTrigger)
                         {
@@ -111,7 +111,7 @@ public class CollisionSystem : GameSytem
                 for (int otherIndex = 0; otherIndex < RegisterManager.Instance.registeredColliders.Count; otherIndex++)
                 {
                     var other = RegisterManager.Instance.registeredColliders[otherIndex];
-                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active)
+                    if (other != null && self != other && other.CanCollide && self.Collider.Intersects(other.Collider) && other.Active && !self.IgnoreCollisions.Contains(other))
                     {
                         if (!other.IsTrigger && !self.IsTrigger)
                         {
