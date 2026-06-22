@@ -11,6 +11,8 @@ namespace MonoGameLibrary.Entities;
 
 public class Entity
 {
+    protected SpriteBatch UsedBatch;
+    
     protected bool canUpdate;
     public bool CanUpdate => canUpdate;
 
@@ -130,6 +132,11 @@ public class Entity
         }
 
         RegisterManager.Instance.UnregisterEntity(this);
+    }
+    
+    public virtual void Render()
+    {
+        Render(UsedBatch);      
     }
 
     public virtual void Render(SpriteBatch spriteBatch)

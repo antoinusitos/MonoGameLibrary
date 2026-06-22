@@ -59,7 +59,7 @@ public class Core : Game
 
     private UIManager UIManager;
 
-    private PerformanceManager performanceManager;
+    protected PerformanceManager performanceManager;
 
     private RegisterManager registerManager;
 
@@ -151,6 +151,8 @@ public class Core : Game
         // Set the core's graphics device to a reference of the base Game's
         // graphics device.
         GraphicsDevice = base.GraphicsDevice;
+        
+        InitializeGraphicResources();
 
         // Create the sprite batch instance.
         SpriteBatch = new SpriteBatch(GraphicsDevice);
@@ -192,6 +194,11 @@ public class Core : Game
         Debug.DebugFont = RessourceManager.Instance.GetOrAddSpriteFont("fonts/04B_30");
 
         UpdateScreenScaleMatrix();
+    }
+
+    protected virtual void InitializeGraphicResources()
+    {
+        
     }
 
     protected override void LoadContent()
@@ -279,6 +286,11 @@ public class Core : Game
 
         performanceManager.Render(SpriteBatch);
 
+        base.Draw(gameTime);
+    }
+
+    protected void BaseGameDraw(GameTime gameTime)
+    {
         base.Draw(gameTime);
     }
 
