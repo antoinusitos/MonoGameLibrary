@@ -59,7 +59,7 @@ public class Core : Game
 
     private UIManager UIManager;
 
-    private PerformanceManager performanceManager;
+    protected PerformanceManager performanceManager;
 
     private RegisterManager registerManager;
 
@@ -279,6 +279,11 @@ public class Core : Game
 
         performanceManager.Render(SpriteBatch);
 
+        base.Draw(gameTime);
+    }
+
+    protected void BaseGameDraw(GameTime gameTime)
+    {
         base.Draw(gameTime);
     }
 
