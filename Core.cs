@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImGuiNET;
+using ImGuiNET.SampleProgram.XNA;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,6 +8,7 @@ using MonoGameLibrary.Audio;
 using MonoGameLibrary.Input;
 using MonoGameLibrary.Managers;
 using MonoGameLibrary.Systems;
+using System;
 
 namespace MonoGameLibrary;
 
@@ -84,6 +86,10 @@ public class Core : Game
     private bool isResizing = false;
     public Viewport viewport;
 
+    /// <summary>  
+    /// Gets the ImGui renderer used for debug UIs.  
+    /// </summary>  
+    public static ImGuiRenderer ImGuiRenderer { get; private set; }
 
     /// <summary>
     /// Creates a new Core instance.
@@ -132,6 +138,7 @@ public class Core : Game
 
         Window.AllowUserResizing = true;
         Window.ClientSizeChanged += OnClientSizeChanged;
+
     }
 
     private void OnClientSizeChanged(object sender, EventArgs e)
@@ -194,6 +201,10 @@ public class Core : Game
         Debug.DebugFont = RessourceManager.Instance.GetOrAddSpriteFont("fonts/04B_30");
 
         UpdateScreenScaleMatrix();
+
+        // Create the ImGui renderer.
+        ImGuiRenderer = new ImGuiRenderer(this);
+        ImGuiRenderer.RebuildFontAtlas();
     }
 
     protected virtual void InitializeGraphicResources()
