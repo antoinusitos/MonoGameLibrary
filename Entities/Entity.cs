@@ -283,4 +283,9 @@ public class Entity
     {
         canCollide = newState;
     }
+
+    public virtual void AddIgnoreCollision(Entity entity)
+    {
+
+    }
 }

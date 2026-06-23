@@ -67,6 +67,8 @@ public class Core : Game
 
     private CameraManager cameraManager;
 
+    private ImGuiManager imGuiManager;
+
     public static UpdateSystem UpdateSystem { get; private set; }
 
     public static ParticleSystem ParticleSystem { get; private set; }
@@ -141,9 +143,18 @@ public class Core : Game
 
     }
 
+    public void Maximize()
+    {
+        int w = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        int h = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        Graphics.PreferredBackBufferWidth = w;
+        Graphics.PreferredBackBufferHeight = h;
+        Graphics.ApplyChanges();
+    }
+
     private void OnClientSizeChanged(object sender, EventArgs e)
     {
-        if (!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0)
+        if (!isResizing && Window.ClientBounds.Width > 0 && Window.ClientBounds.Height > 0 && GraphicsDevice != null)
         {
             isResizing = true;
             UpdateScreenScaleMatrix();
@@ -191,6 +202,8 @@ public class Core : Game
         cameraManager = new CameraManager();
 
         UIManager = new UIManager();
+
+        imGuiManager = new ImGuiManager();
 
         performanceManager = new PerformanceManager();
         performanceManager.LoadContent(Content);
