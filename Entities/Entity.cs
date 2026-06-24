@@ -146,14 +146,7 @@ public class Entity
             return;
         }
 
-        if (animatedSprite != null)
-        {
-            animatedSprite.Draw(spriteBatch, position, scale, color);
-        }
-        if (sprite != null)
-        {
-            sprite.Draw(spriteBatch, position, scale, color);
-        }
+        DrawSprite(spriteBatch);
 
         if (canCollide && Debug.DRAW_AABB)
         {
@@ -173,6 +166,18 @@ public class Entity
             {
                 spriteBatch.Draw(Debug.DebugTexture, new Rectangle((int)collider.X, (int)collider.Y, 5, 5), Color.Orange);
             }
+        }
+    }
+
+    public void DrawSprite(SpriteBatch spriteBatch)
+    {
+        if (animatedSprite != null)
+        {
+            animatedSprite.Draw(spriteBatch, position, scale, color);
+        }
+        if (sprite != null)
+        {
+            sprite.Draw(spriteBatch, position, scale, color);
         }
     }
 
