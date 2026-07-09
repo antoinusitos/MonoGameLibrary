@@ -49,8 +49,10 @@ public class Entity
     public Vector2 Velocity;// => _velocity;
 
     protected AnimatedSprite animatedSprite;
+    public AnimatedSprite AnimatedSprite => animatedSprite;
 
     protected Sprite sprite;
+    public Sprite Sprite => sprite;
 
     protected Box collider;
     public Box Collider => collider;

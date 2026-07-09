@@ -80,6 +80,7 @@ public class Core : Game
 
     public static MoveSystem MoveSystem { get; private set; }
 
+    // This values feat best for 16px sprites
     public static int realWidth = 320;
     public static int realHeight = 180;
 

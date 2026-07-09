@@ -194,7 +194,7 @@ public class Tilemap
             // Create the tilemap
             Tilemap tilemap = new Tilemap(tileset, columnCount, rowCount, tilemapJson.renderMaxCols, tilemapJson.renderMaxRows, tilemapJson.name);
 
-            // Process each row
+           /* // Process each row
             for (int row = 0; row < rowCount; row++)
             {
                 // Process each column of the current row
@@ -222,7 +222,7 @@ public class Tilemap
                     tile.SetScale(0.25f);
                     tile.SetPosition(new Vector2(column * 8, row * 8));
                 }
-            }
+            }*/
 
             tilemapJSONOut = tilemapJson;
 

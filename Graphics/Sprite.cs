@@ -10,6 +10,8 @@ public class Sprite
     /// </summary>
     public TextureRegion Region { get; set; }
 
+    public Rectangle SourceRectangle { get; set; }
+
     /// <summary>
     /// Gets or Sets the color mask to apply when rendering this sprite.
     /// </summary>
