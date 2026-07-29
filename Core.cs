@@ -301,6 +301,8 @@ public class Core : Game
         RenderSystem.Update(deltaTime);
         ParticleSystem.Render(deltaTime);
 
+        SceneManager.Instance.ActiveScene.PostDraw(deltaTime);
+
         // Always end the sprite batch when finished.
         SpriteBatch.End();
 

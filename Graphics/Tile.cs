@@ -10,13 +10,13 @@ namespace MonoGameLibrary.Graphics;
 
 public class Tile : Entity
 {
-    private string spriteName;
-    private string atlasName;
-    private int index;
+    private string spriteName = "";
+    private string atlasName = "";
+    private int index = 0;
     public int Index => index;
-    private int x;
+    private int x = 0;
     public int X => x;
-    private int y;
+    private int y = 0;
     public int Y => y;
 
     public TileInfo tileInfo;
