@@ -37,6 +37,9 @@ public class RegisterManager
 
     public List<ParticleEmitter> registeredEmitters = new();
 
+    public Action<Entity> OnEntityRegistered;
+    public Action<Entity> OnEntityUnregistered;
+
     private uint id = 0;
 
     public void ClearAll()
@@ -70,6 +73,7 @@ public class RegisterManager
         {
             registeredParticles.Add((Particle)entity);
         }
+        OnEntityRegistered?.Invoke(entity);
     }
 
     public void UnregisterEntity(Entity entity)
@@ -91,6 +95,7 @@ public class RegisterManager
         {
             registeredParticles.Remove((Particle)entity);
         }
+        OnEntityUnregistered?.Invoke(entity);
     }
 
     public void ClearAllExceptPlayer(Entity player)

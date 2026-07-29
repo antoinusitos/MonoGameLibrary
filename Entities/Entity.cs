@@ -6,11 +6,15 @@ using MonoGameLibrary.Managers;
 using MonoGameLibrary.Misc;
 using MonoGameLibrary.Shapes;
 using System.Collections.Generic;
+using ImGuiNET;
+using MonoGameLibrary.EngineDebug;
 
 namespace MonoGameLibrary.Entities;
 
-public class Entity
+public class Entity : IInspectableItem
 {
+    public string EntityGroup = "Default";
+    
     protected SpriteBatch usedBatch;
     
     protected bool canUpdate;
@@ -294,5 +298,18 @@ public class Entity
     public virtual void AddIgnoreCollision(Entity entity)
     {
 
+    }
+
+    public string Name => EntityName;
+
+    public uint ItemID => ID;
+    
+    public virtual void DrawProperties()
+    {
+        ImGUIUtilities.InputVector2(ref position, "Position");
+        ImGUIUtilities.InputVector2(ref Velocity, "Velocity");
+        ImGui.InputFloat("Scale", ref scale);
+        ImGui.InputFloat("Mass", ref mass);
+        ImGUIUtilities.InputColor(ref color, "Color");
     }
 }
