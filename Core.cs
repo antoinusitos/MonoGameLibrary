@@ -9,6 +9,7 @@ using MonoGameLibrary.Input;
 using MonoGameLibrary.Managers;
 using MonoGameLibrary.Systems;
 using System;
+using MonoGameLibrary.EngineDebug;
 
 namespace MonoGameLibrary;
 
@@ -219,6 +220,9 @@ public class Core : Game
         // Create the ImGui renderer.
         ImGuiRenderer = new ImGuiRenderer(this);
         ImGuiRenderer.RebuildFontAtlas();
+        DataDebugger.Initialize();
+        ImGuiManager.Instance.customGUI += DataDebugger.CustomGUI;
+        
     }
 
     protected virtual void InitializeGraphicResources()
