@@ -10,6 +10,7 @@ using MonoGameLibrary.Managers;
 using MonoGameLibrary.Systems;
 using System;
 using MonoGameLibrary.EngineDebug;
+using MonoGameLibrary.Graphics.Material;
 
 namespace MonoGameLibrary;
 
@@ -166,6 +167,7 @@ public class Core : Game
 
     protected override void Initialize()
     {
+        MaterialManager.Initialize();
         base.Initialize();
 
         // Set the core's graphics device to a reference of the base Game's
@@ -217,6 +219,7 @@ public class Core : Game
 
         UpdateScreenScaleMatrix();
 
+        
         // Create the ImGui renderer.
         ImGuiRenderer = new ImGuiRenderer(this);
         ImGuiRenderer.RebuildFontAtlas();

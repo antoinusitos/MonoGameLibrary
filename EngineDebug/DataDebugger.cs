@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using ImGuiNET;
 using MonoGameLibrary.Entities;
+using MonoGameLibrary.Graphics.Material;
 using MonoGameLibrary.Managers;
 
 namespace MonoGameLibrary.EngineDebug;
@@ -60,11 +61,14 @@ public class DataDebugger
     {
         DisplayEntityList();
         DisplayInspectedItems();
+        DisplayMaterialList();
     }
 
     private static void DisplayEntityList()
     {
-        ImGui.Begin("Entities");
+        string windowName = "Entities";
+        ImGui.Begin(windowName);
+        ImGUIUtilities.SetWindowSizeToDefault(windowName);
         foreach ((string group, List<Entity> entities) in Instance.sortedEntities)
         {
             if (ImGui.TreeNode(group))
@@ -83,7 +87,7 @@ public class DataDebugger
             if (entity.Children.Count != 0)
             {
                 bool isTreeNodeFoldout = ImGui.TreeNode(entity.EntityName);
-                DisplayEntityContextButton(entity);
+                DisplayItemContextButton(entity);
                 if (isTreeNodeFoldout)
                 {
                     DisplayEntityListInHierarchy(entity.Children);
@@ -93,25 +97,7 @@ public class DataDebugger
             else
             {
                 ImGui.Text(entity.EntityName);
-                DisplayEntityContextButton(entity);
-            }
-        }
-    }
-
-    private static void DisplayEntityContextButton(Entity entity)
-    {
-        ImGui.SameLine();
-        bool containsEntity = Instance.inspectedItems.Contains(entity);
-        string label = containsEntity ? "x" : "o";
-        if (ImGui.SmallButton($"{label}##{entity.ID}"))
-        {
-            if (containsEntity)
-            {
-                Instance.inspectedItems.Remove(entity);
-            }
-            else
-            {
-                Instance.inspectedItems.Add(entity);
+                DisplayItemContextButton(entity);
             }
         }
     }
@@ -127,12 +113,46 @@ public class DataDebugger
 
     private static void DrawInspectedItem(IInspectableItem inspectedItem, int index)
     {
-        ImGui.Begin($"Inspector: {inspectedItem.Name}##{inspectedItem.ItemID}");
+        string windowName = $"Inspector: {inspectedItem.Name}##{inspectedItem.ItemID}";
+        ImGui.Begin(windowName);
+        ImGUIUtilities.SetWindowSizeToDefault(windowName);
+        
         if (ImGui.SmallButton($"x##{inspectedItem.ItemID}"))
         {
             Instance.inspectedItems.RemoveAt(index);
         }
         inspectedItem.DrawProperties();
         ImGui.End();
+    }
+    
+    private static void DisplayMaterialList()
+    {
+        string windowName = "Materials";
+        ImGui.Begin(windowName);
+        ImGUIUtilities.SetWindowSizeToDefault(windowName);
+        foreach ((string materialName, Material material) in MaterialManager.Instance.Materials)
+        {
+            ImGui.Text(material.Name);
+            DisplayItemContextButton(material);
+        }
+        ImGui.End();
+    }
+    
+    private static void DisplayItemContextButton(IInspectableItem item)
+    {
+        ImGui.SameLine();
+        bool containsEntity = Instance.inspectedItems.Contains(item);
+        string label = containsEntity ? "x" : "o";
+        if (ImGui.SmallButton($"{label}##{item.ItemID}"))
+        {
+            if (containsEntity)
+            {
+                Instance.inspectedItems.Remove(item);
+            }
+            else
+            {
+                Instance.inspectedItems.Add(item);
+            }
+        }
     }
 }
