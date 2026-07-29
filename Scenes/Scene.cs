@@ -90,6 +90,12 @@ public abstract class Scene : IDisposable
     public virtual void Draw(float deltaTime) { }
 
     /// <summary>
+    /// Post Draw this scene after the systems.
+    /// </summary>
+    /// <param name="gameTime">A snapshot of the timing values for the current frame.</param>
+    public virtual void PostDraw(float deltaTime) { }
+
+    /// <summary>
     /// Disposes of this scene.
     /// </summary>
     public void Dispose()
