@@ -33,6 +33,11 @@ public class ImGuiManager
 
     public void Update(GameTime gameTime)
     {
+        if (!Debug.DRAW_IMGUI)
+        {
+            return;
+        }
+
         // Draw debug UI
         Core.ImGuiRenderer.BeforeLayout(gameTime);
 

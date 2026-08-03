@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using ImGuiNET;
 using MonoGameLibrary.Entities;
@@ -10,7 +11,10 @@ public class DataDebugger
 {
     private List<IInspectableItem> inspectedItems = new();
     private Dictionary<string, List<Entity>> sortedEntities = new();
-    
+
+    private static bool showConsole = false;
+    private static bool showEntities = false;
+
     private static DataDebugger instance;
 
     public static DataDebugger Instance => instance;
@@ -58,13 +62,57 @@ public class DataDebugger
 
     public static void CustomGUI()
     {
+        MenuBar();
         DisplayEntityList();
         DisplayInspectedItems();
+        DisplayConsole();
+    }
+
+    private static void MenuBar()
+    {
+        ImGui.SetNextWindowSize(new Vector2(Core.realWidth, 20));
+        ImGui.SetNextWindowPos(Vector2.Zero);
+        if (ImGui.Begin("Menu", ImGuiWindowFlags.MenuBar))
+        {
+            if (ImGui.BeginMenuBar())
+            {
+                if (ImGui.BeginMenu("Fichier"))
+                {
+                    if (ImGui.MenuItem("Hide ImGui")) { Debug.DRAW_IMGUI = false; }
+                    if (ImGui.MenuItem("Quitter")) { Core.instance.Exit(); }
+                    ImGui.EndMenu();
+                }
+                if (ImGui.MenuItem("Console", "Ctrl+P")) { showConsole = true; }
+                if (ImGui.MenuItem("Entities", "Ctrl+E")) { showEntities = true; }
+                ImGui.EndMenuBar();
+            }
+        }
+        ImGui.End();
+    }
+
+    private static void DisplayConsole()
+    {
+        if (!showConsole)
+        {
+            return;
+        }    
+
+        ImGui.Begin("Console", ref showConsole);
+        foreach (string line in Debug.debugLines)
+        {
+            ImGui.Text(line);
+        }
+        ImGui.End();
     }
 
     private static void DisplayEntityList()
     {
-        ImGui.Begin("Entities");
+        if (!showEntities)
+        {
+            return;
+        }
+
+        ImGui.Begin("Entities", ref showEntities);
         foreach ((string group, List<Entity> entities) in Instance.sortedEntities)
         {
             if (ImGui.TreeNode(group))

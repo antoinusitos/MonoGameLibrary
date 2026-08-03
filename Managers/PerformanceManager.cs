@@ -64,6 +64,10 @@ public class PerformanceManager
         {
             Debug.DRAW_AABB = !Debug.DRAW_AABB;
         }
+        if (keyboard.WasKeyJustPressed(Keys.F5))
+        {
+            Debug.DRAW_IMGUI = !Debug.DRAW_IMGUI;
+        }
     }
 
     public void Render(SpriteBatch spriteBatch)
