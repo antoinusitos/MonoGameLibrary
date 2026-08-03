@@ -15,10 +15,22 @@ public class ImGUIUtilities
         }
     }
 
-    public static void InputColor(ref Color color, string label)
+    public static bool InputColor(ref Color color, string label)
     {
         System.Numerics.Vector4 castedColor = color.ToVector4().ToNumerics();
+        System.Numerics.Vector4 previousValue = castedColor;
         ImGui.ColorEdit4(label, ref castedColor);
+        if (previousValue == castedColor)
+        {
+            return false;
+        }
         color = new Color(castedColor);
+        return true;
+    }
+
+    public static void SetWindowSizeToDefault(string windowName)
+    {
+        var currentSize = ImGui.GetWindowSize();
+        ImGui.SetWindowSize(windowName, new System.Numerics.Vector2(MathHelper.Max(100, currentSize.X), MathHelper.Max(100, currentSize.Y)));
     }
 }
